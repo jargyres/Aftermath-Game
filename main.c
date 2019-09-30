@@ -31,7 +31,7 @@ int main() {
                                        SDL_WINDOW_SHOWN);
 
     //create a renderer which sets up the graphics hardware
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
     //this will be the rendered we use
     SDL_Renderer *rend = SDL_CreateRenderer(win, -1, render_flags);
     //create a flip option for the renderer when we want to flip our sprites
@@ -287,6 +287,131 @@ int main() {
     // backgroundRect4(-1000,0)           backgroundRect(0,0)              backgroundRect5(1000,0)
 
     // backgroundRect6 (-1000,1000)       backgroundRect7(0,1000)          backgroundRect8(1000,1000)
+
+
+
+    //now we want 10 by 10 view of the map
+    // 0,0 0,1 0,2 0,3 0,4 0,5 0,6 0,7 0,8 0,9
+    //...
+    //9,0         ...                      9,9
+
+    //set up our Rects for our background in the messiest way possible
+
+    SDL_Rect bg00, bg01, bg02, bg03, bg04, bg05, bg06, bg07, bg08, bg09;
+    SDL_Rect bg10, bg11, bg12, bg13, bg14, bg15, bg16, bg17, bg18, bg19;
+    SDL_Rect bg20, bg21, bg22, bg23, bg24, bg25, bg26, bg27, bg28, bg29;
+    SDL_Rect bg30, bg31, bg32, bg33, bg34, bg35, bg36, bg37, bg38, bg39;
+    SDL_Rect bg40, bg41, bg42, bg43, bg44, bg45, bg46, bg47, bg48, bg49;
+    SDL_Rect bg50, bg51, bg52, bg53, bg54, bg55, bg56, bg57, bg58, bg59;
+    SDL_Rect bg60, bg61, bg62, bg63, bg64, bg65, bg66, bg67, bg68, bg69;
+    SDL_Rect bg70, bg71, bg72, bg73, bg74, bg75, bg76, bg77, bg78, bg79;
+    SDL_Rect bg80, bg81, bg82, bg83, bg84, bg85, bg86, bg87, bg88, bg89;
+    SDL_Rect bg90, bg91, bg92, bg93, bg94, bg95, bg96, bg97, bg98, bg99;
+
+    //throw all the pointers of them into a 10x10 array of pointers for ease of calling later
+    SDL_Rect *backgroundArr[10][10] = {
+        {&bg00, &bg01, &bg02, &bg03, &bg04, &bg05, &bg06, &bg07, &bg08, &bg09},
+        {&bg10, &bg11, &bg12, &bg13, &bg14, &bg15, &bg16, &bg17, &bg18, &bg19},
+        {&bg20, &bg21, &bg22, &bg23, &bg24, &bg25, &bg26, &bg27, &bg28, &bg29},
+        {&bg30, &bg31, &bg32, &bg33, &bg34, &bg35, &bg36, &bg37, &bg38, &bg39},
+        {&bg40, &bg41, &bg42, &bg43, &bg44, &bg45, &bg46, &bg47, &bg48, &bg49},
+        {&bg50, &bg51, &bg52, &bg53, &bg54, &bg55, &bg56, &bg57, &bg58, &bg59},
+        {&bg60, &bg61, &bg62, &bg63, &bg64, &bg65, &bg66, &bg67, &bg68, &bg69},
+        {&bg70, &bg71, &bg72, &bg73, &bg74, &bg75, &bg76, &bg77, &bg78, &bg79},
+        {&bg80, &bg81, &bg82, &bg83, &bg84, &bg85, &bg86, &bg87, &bg88, &bg89},
+        {&bg90, &bg91, &bg92, &bg93, &bg94, &bg95, &bg96, &bg97, &bg98, &bg99},
+
+    };
+
+    // (*backgroundArr[5][4]).x = 0;
+    // (*backgroundArr[5][4]).y = 0;
+    // (*backgroundArr[5][4]).w = 1000;
+    // (*backgroundArr[5][4]).h = 1000;
+
+    int tempposx = 0;
+    int tempposy = 0;
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            switch (i)
+            {
+            case 9:
+                tempposy = 4000;
+                break;
+            case 8:
+                tempposy = 3000;
+                break;
+            case 7:
+                tempposy = 2000;
+                break;
+            case 6:
+                tempposy = 1000;
+                break;
+            case 5:
+                tempposy = 0;
+                break;
+            case 4:
+                tempposy = -1000;
+                break;
+            case 3:
+                tempposy = -2000;
+                break;
+            case 2:
+                tempposy = -3000;
+                break;
+            case 1:
+                tempposy = -4000;
+                break;
+            case 0:
+                tempposy = -5000;
+                break;
+            }
+            switch (j)
+            {
+            case 9:
+                tempposx = 5000;
+                break;
+            case 8:
+                tempposx = 4000;
+                break;
+            case 7:
+                tempposx = 3000;
+                break;
+            case 6:
+                tempposx = 2000;
+                break;
+            case 5:
+                tempposx = 1000;
+                break;
+            case 4:
+                tempposx = 0;
+                break;
+            case 3:
+                tempposx = -1000;
+                break;
+            case 2:
+                tempposx = -2000;
+                break;
+            case 1:
+                tempposx = -3000;
+                break;
+            case 0:
+                tempposx = -4000;
+                break;
+            }
+
+            (*backgroundArr[i][j]).x = tempposx;
+            (*backgroundArr[i][j]).y = tempposy;
+            (*backgroundArr[i][j]).w = 1000;
+            (*backgroundArr[i][j]).h = 1000;
+           
+            SDL_QueryTexture(backgroundTexture, NULL, NULL, &(*backgroundArr[i][j]).w, &((*backgroundArr[i][j]).h));
+        }
+    }
+
+    
+
     SDL_Rect backgroundRect;
     backgroundRect.w = 1000;
     backgroundRect.h = 1000;
@@ -406,9 +531,15 @@ int main() {
     float backgroundPosX = 0.0;
     float backgroundPosY = 0.0;
 
+    int backgroundOffsetX = 0;
+    int backgroundOffsetY = 0;
+
     int titleScreen = 1;
     int play = 0;
     int bulletsOnScreen = 0;
+    int playerPosX = windowRect.x;
+    int playerPosY = windowRect.x;
+    int hitwall = 0;
 
     if(titleScreen && !play)
     {
@@ -565,56 +696,119 @@ int main() {
 
             x_vel = y_vel = 0;
 
-            if(up && !down) y_vel = 300;
-            if(down && !up) y_vel = -300;
-            if(left && !right) x_vel = 300;
-            if(right && !left) x_vel = -300;
-            if(!up && !down && !left && !right) currentlyWalking = 0;
-
-
-            if(backgroundPosX >= 1000) backgroundPosX = 0;
-            if(backgroundPosX <= -1000) backgroundPosX = 0;
-            if(backgroundPosY >= 1000) backgroundPosY = 0;
-            if(backgroundPosY <= -1000) backgroundPosY = 0;
-
-
+            if(up && !down) y_vel = 1000;
+            if(down && !up) y_vel = -1000;
+            if(left && !right) x_vel = 1000;
+            if(right && !left) x_vel = -1000;
+            if(!up && !down && !left && !right)
+            {
+                currentlyWalking = 0;
+                x_vel = 0;
+                y_vel = 0;
+            }
+    
+            if(playerPosX > 4000 || playerPosX < -3000 || playerPosY > 3000 || playerPosY < -3000)
+                {
+                    hitwall = 1;
+                    
+                }
+                else
+                {
+                    hitwall = 0;
+                }
             if(currentlyWalking)
             {
 
-                backgroundPosX += x_vel / 60;
-                backgroundPosY += y_vel / 60;
+                
+                backgroundOffsetX += x_vel / 60;
+                backgroundOffsetY += y_vel / 60;
+                
+                playerPosX = ((WINDOW_WIDTH - windowRect.w) / 2) - backgroundOffsetX;
+                playerPosY = ((WINDOW_HEIGHT - windowRect.h) / 2) - backgroundOffsetY;
+                
+                for(int i = 0; i < 10; i++)
+                {
+                    for(int j = 0; j < 10; j++)
+                    {
+                        switch (i)
+                        {
+                            case 9:
+                                tempposy = 4000;
+                                break;
+                            case 8:
+                                tempposy = 3000;
+                                break;
+                            case 7:
+                                tempposy = 2000;
+                                break;
+                            case 6:
+                                tempposy = 1000;
+                                break;
+                            case 5:
+                                tempposy = 0;
+                                break;
+                            case 4:
+                                tempposy = -1000;
+                                break;
+                            case 3:
+                                tempposy = -2000;
+                                break;
+                            case 2:
+                                tempposy = -3000;
+                                break;
+                            case 1:
+                                tempposy = -4000;
+                                break;
+                            case 0:
+                                tempposy = -5000;
+                                break;
+                        }
+                        switch (j)
+                        {
+                            case 9:
+                                tempposx = 5000;
+                                break;
+                            case 8:
+                                tempposx = 4000;
+                                break;
+                            case 7:
+                                tempposx = 3000;
+                                break;
+                            case 6:
+                                tempposx = 2000;
+                                break;
+                            case 5:
+                                tempposx = 1000;
+                                break;
+                            case 4:
+                                tempposx = 0;
+                                break;
+                            case 3:
+                                tempposx = -1000;
+                                break;
+                            case 2:
+                                tempposx = -2000;
+                                break;
+                            case 1:
+                                tempposx = -3000;
+                                break;
+                            case 0:
+                                tempposx = -4000;
+                                break;
+                        }
+                        
+                            
+                            (*backgroundArr[i][j]).x = tempposx + backgroundOffsetX;
+                            (*backgroundArr[i][j]).y = tempposy + backgroundOffsetY;                        
+                        
+                    }
 
-                backgroundRect.x = (int) backgroundPosX;
-                backgroundRect.y = (int) backgroundPosY;
 
-                backgroundRect1.x = backgroundRect.x - 1000;
-                backgroundRect1.y = backgroundRect.y - 1000;
 
-                backgroundRect2.x = backgroundRect.x;
-                backgroundRect2.y = backgroundRect.y - 1000;
 
-                backgroundRect3.x = backgroundRect.x + 1000;
-                backgroundRect3.y = backgroundRect.y - 1000;
-
-                backgroundRect4.x = backgroundRect.x - 1000;
-                backgroundRect4.y = backgroundRect.y;
-
-                backgroundRect5.x = backgroundRect.x + 1000;
-                backgroundRect5.y = backgroundRect.y;
-
-                backgroundRect6.x = backgroundRect.x - 1000;
-                backgroundRect6.y = backgroundRect.y + 1000;
-
-                backgroundRect7.x = backgroundRect.x;
-                backgroundRect7.y = backgroundRect.y + 1000;
-
-                backgroundRect8.x = backgroundRect.x + 1000;
-                backgroundRect8.y = backgroundRect.y + 1000;
-
+                }
 
             }
-
-
 
             if(currentlyWalking){
                 int frames = PLAYERWALKINGFRAMES;
@@ -656,37 +850,10 @@ int main() {
                 //if we arent walking just show the first sprite so it looks like were standing still
                 textureRect.x = 0;
                 textureRect2.x = 0;
-//                int shootFrame = (SDL_GetTicks() / 150) % 2;
-//                playerShootRectTex.x = shootFrame * playerShootRectTex.w;
-
-
 
             }
 
-//            for(int j = 0; j < bulletsOnScreen; j++)
-//            {
-//                if(bulletLeftRight[j])
-//                {
-//                    bullet_vel_x = -1;
-//
-//
-//                }
-//                if(!bulletLeftRight[j])
-//                {
-//                    bullet_vel_x = 1;
-//                }
-//                (*bulletArr[j]).x += bullet_vel_x;
-//
-//            }
-//
-//            //look at all the x values of our bullets
-//            for(int i = 0; i < 10; i++)
-//            {
-//                if((*bulletArr[i]).x <= -2000 || (*bulletArr[i]).x <= -2000)
-//                {
-//                    bulletsOnScreen--;
-//                }
-//            }
+
 
 
 
@@ -696,15 +863,13 @@ int main() {
             SDL_RenderClear(rend);
 
 
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect1);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect2);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect3);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect4);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect5);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect6);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect7);
-            SDL_RenderCopy(rend, backgroundTexture, NULL, &backgroundRect8);
+            for(int i = 0; i < 10; i++)
+            {
+                for(int j = 0; j < 10; j++)
+                {
+                    SDL_RenderCopy(rend, backgroundTexture, NULL, &(*backgroundArr[i][j]));
+                }
+            }
 
             if(lastRight && !currentlyUp && !currentlyShooting)
             {
@@ -774,3 +939,4 @@ int main() {
     SDL_Quit();
     return 0;
 }
+
