@@ -51,7 +51,7 @@ int main() {
     SDL_Texture* playerShootTex = NULL;
     SDL_Texture* bulletTex = NULL;
 
-
+    //hello
 
     //load the image into memory using SDL_Image library functions
     SDL_Surface* surface = IMG_Load("images/player.png");
