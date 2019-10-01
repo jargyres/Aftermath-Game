@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #define LEVEL_WIDTH 2000
 #define LEVEL_HEIGHT 2000
@@ -11,8 +12,7 @@
 #define PLAYERWALKINGFRAMES 3
 
 //Ubuntu should already have SDL so just run this command to get the Image processing files
-
-// "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev"
+// "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-2.0-0"
 // and then you should have everything you need
 // ive been compiling with
 // "gcc main.c -lSDL2 -lSDL2main -lSDL2_image -lm -o main"
@@ -42,6 +42,7 @@ int main() {
     //this is what we will use to see keyboard events, or basically anything like that
     SDL_Event event;
     int quit = 0;
+    
 
     //Initialize some textures to nothing for now
     SDL_Texture* spriteSheet = NULL;
@@ -88,6 +89,13 @@ int main() {
     SDL_FreeSurface(titleSurface1);
     SDL_FreeSurface(titleSurface2);
     SDL_FreeSurface(titleSurface3);
+
+
+    //load our music
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+    Mix_Music *titleMusic = NULL;
+    titleMusic = Mix_LoadMUS("music/CastleThemeSuperMarioWorld.mp3");
+    
 
     //this is the rectangle that will actually show the images
 
@@ -277,7 +285,7 @@ int main() {
     int bulletsOnScreen = 0;
     int playerPosX = windowRect.x;
     int playerPosY = windowRect.x;
-
+    
     if(titleScreen && !play)
     {
         int playHoveredOver = 0;
@@ -285,9 +293,13 @@ int main() {
         int mouse_x;
         int mouse_y;
         int frame = 0;
+        int keepPlayingTitleMusic = 1;
+        Mix_PlayMusic(titleMusic, -1);
         while(!quit && !play)
         {
             Uint64 start = SDL_GetPerformanceCounter();
+
+            
 
             while(SDL_PollEvent(&event))
             {
@@ -362,6 +374,7 @@ int main() {
         }
     }
     if(!titleScreen && play){
+        Mix_HaltMusic();
         while(!quit)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -565,6 +578,8 @@ int main() {
     SDL_DestroyTexture(title3Tex);
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
+    Mix_FreeMusic(titleMusic);
+    Mix_CloseAudio();
     SDL_Quit();
     return 0;
 }
