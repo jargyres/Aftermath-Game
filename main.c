@@ -1,4 +1,4 @@
-#include <math.h>
+// #include <math.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
@@ -10,7 +10,7 @@
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 1000
 #define PLAYERWALKINGFRAMES 3
-
+#define M_PI 3.14159
 //Ubuntu should already have SDL so just run this command to get the Image processing files
 // "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-2.0-0"
 // and then you should have everything you need
