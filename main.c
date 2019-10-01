@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
@@ -17,10 +17,10 @@
 // ive been compiling with
 // "gcc main.c -lSDL2 -lSDL2main -lSDL2_image -lm -o main"
 // and then I run with "./main"
-
 int bgPositionx = 0;
 int bgPositiony = 0;
 void getOffset(int i, int j);
+double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight);
 int main() {
 
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -285,6 +285,7 @@ int main() {
     int bulletsOnScreen = 0;
     int playerPosX = windowRect.x;
     int playerPosY = windowRect.x;
+    double angle = 0.0;
     
     if(titleScreen && !play)
     {
@@ -374,7 +375,9 @@ int main() {
         }
     }
     if(!titleScreen && play){
-        Mix_HaltMusic();
+        // Mix_HaltMusic();
+        int mouse_x;
+        int mouse_y;
         while(!quit)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -441,6 +444,12 @@ int main() {
                                 break;
                         }
                         break;
+                    case SDL_MOUSEMOTION:
+                        SDL_GetMouseState(&mouse_x, &mouse_y);
+                        angle = getAngle(mouse_x, mouse_y, windowRect.w, windowRect.h);
+                        // printf("angle = %f", angle);
+                        break;
+
                 }
             }
 
@@ -458,6 +467,7 @@ int main() {
                 y_vel = 0;
             }
     
+            // printf("playerXpos = %d playerYPos = %d\n", playerPosX, playerPosY);
             if(currentlyWalking)
             {
 
@@ -539,12 +549,32 @@ int main() {
             }
             else if(currentlyShooting && lastRight)
             {
-                SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, 0.0, NULL, flip);
+                if((angle > 0 && angle < 40) || (angle < 0 && angle > -40))
+                {
+                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, angle, NULL, flip);
+                }
+                else
+                {
+                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, 0.0, NULL, flip);
+
+                }
+                
 
             }
             else if(currentlyShooting && !lastRight)
             {
-                SDL_RenderCopy(rend, playerShootTex, &playerShootRectTex, &windowRect);
+                                // printf("%f ", angle);
+                //-135
+                //-150
+                if((angle > -179 && angle < -130)  || (angle < 180 && angle > 140))
+                {
+                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, angle - 180 , NULL, SDL_FLIP_NONE);
+                }
+                else
+                {
+                    SDL_RenderCopy(rend, playerShootTex, &playerShootRectTex, &windowRect);
+                }
+                
 
             }
             else
@@ -684,5 +714,23 @@ void getOffset(int i, int j)
                 bgPositionx = -7000;
                 break;
             }
+
+}
+
+double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
+{
+    int multiplierX;
+    int multiplierY;
+    //do this to get the center of the player
+    // double deltaX = MouseX - (playerX - (multiplierX * playerWidth)); 
+    // double deltaY = MouseY - (playerY - (multiplierY * playerHeight));
+    double deltaX = MouseX - ((WINDOW_WIDTH - playerWidth)/2);
+    double deltaY = MouseY - ((WINDOW_HEIGHT - playerHeight)/2);
+    
+
+    double angleBetweenPoints = SDL_atan2(deltaY, deltaX) * 180 / M_PI;
+
+    return angleBetweenPoints;
+
 
 }
