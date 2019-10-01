@@ -94,7 +94,7 @@ int main() {
     //load our music
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_Music *titleMusic = NULL;
-    titleMusic = Mix_LoadMUS("music/CastleThemeSuperMarioWorld.mp3");
+    titleMusic = Mix_LoadMUS("music/Basshunter.mp3");
     
 
     //this is the rectangle that will actually show the images
