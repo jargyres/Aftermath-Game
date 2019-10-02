@@ -5,11 +5,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#define LEVEL_WIDTH 2000
-#define LEVEL_HEIGHT 2000
+#define LEVEL_WIDTH 15000
+#define LEVEL_HEIGHT 15000
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 1000
 #define PLAYERWALKINGFRAMES 3
+#define PLAYER_WIDTH 128
+#define PLAYER_HEIGHT 128
 // #define M_PI 3.14159
 //Ubuntu should already have SDL so just run this command to get the Image processing files
 // "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-2.0-0"
@@ -19,8 +21,12 @@
 // and then I run with "./main"
 int bgPositionx = 0;
 int bgPositiony = 0;
+int startPosX = (LEVEL_WIDTH  / 2); 
+int startPosY = (LEVEL_HEIGHT / 2);
 void getOffset(int i, int j);
 double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight);
+int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
+
 int main() {
 
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -135,8 +141,8 @@ int main() {
 
 
     SDL_Rect windowRect2;
-    windowRect2.w = 128;
-    windowRect2.h = 128;
+    windowRect2.w = PLAYER_WIDTH;
+    windowRect2.h = PLAYER_HEIGHT;
     windowRect2.x = windowRect.x;
     windowRect2.y = windowRect.y;
 
@@ -155,8 +161,8 @@ int main() {
     textureRect2.h = 64;
 
     SDL_Rect playerShootRectWin;
-    playerShootRectWin.w = 128;
-    playerShootRectWin.h = 128;
+    playerShootRectWin.w = PLAYER_WIDTH;
+    playerShootRectWin.h = PLAYER_HEIGHT;
     playerShootRectWin.x = (WINDOW_WIDTH - playerShootRectWin.w) /2;
     playerShootRectWin.y = (WINDOW_HEIGHT - playerShootRectWin.h) /2;
 
@@ -221,12 +227,14 @@ int main() {
     };
 
     //Query all the textures into their respective Rects
+
     for(int i = 0; i < 15; i++)
     {
         for(int j = 0; j < 15; j++)
         {
-            
             getOffset(i, j);
+            // bgPositionx = i * 1000;
+            // bgPositiony = j * 1000;
             (*backgroundArr[i][j]).x = bgPositionx;
             (*backgroundArr[i][j]).y = bgPositiony;
             (*backgroundArr[i][j]).w = 1000;
@@ -283,8 +291,8 @@ int main() {
     int titleScreen = 1;
     int play = 0;
     int bulletsOnScreen = 0;
-    int playerPosX = windowRect.x;
-    int playerPosY = windowRect.x;
+    int playerPosX = startPosX;
+    int playerPosY = startPosX;
     double angle = 0.0;
     
     if(titleScreen && !play)
@@ -295,7 +303,7 @@ int main() {
         int mouse_y;
         int frame = 0;
         int keepPlayingTitleMusic = 1;
-        Mix_PlayMusic(titleMusic, -1);
+        // Mix_PlayMusic(titleMusic, -1);
         while(!quit && !play)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -456,44 +464,55 @@ int main() {
             x_vel = y_vel = 0;
             //these should be between 200 or 300 to look good but
             //I want to be fast when testing
-            if(up && !down) y_vel = 1000;
-            if(down && !up) y_vel = -1000;
-            if(left && !right) x_vel = 1000;
-            if(right && !left) x_vel = -1000;
+            if(up && !down) y_vel = 1200;
+            if(down && !up) y_vel = -1200;
+            if(left && !right) x_vel = 1200;
+            if(right && !left) x_vel = -1200;
             if(!up && !down && !left && !right)
             {
                 currentlyWalking = 0;
                 x_vel = 0;
                 y_vel = 0;
             }
-    
+
             // printf("playerXpos = %d playerYPos = %d\n", playerPosX, playerPosY);
             if(currentlyWalking)
             {
 
                 //this offset "moves" the player
-                backgroundOffsetX += x_vel / 60;
-                backgroundOffsetY += y_vel / 60;
-                //also calculate the players position when we move 
-                //subtract because we are moving in the "opposite" direction
-                playerPosX = ((WINDOW_WIDTH - windowRect.w) / 2) - backgroundOffsetX;
-                playerPosY = ((WINDOW_HEIGHT - windowRect.h) / 2) - backgroundOffsetY;
-                
-                for(int i = 0; i < 15; i++)
+                if(validMoveMent(playerPosX, playerPosY, right, left, up, down))
                 {
-                    for(int j = 0; j < 15; j++)
-                    {
+                    backgroundOffsetX += x_vel / 60;
+                    backgroundOffsetY += y_vel / 60;
+                    //this normalizes the players position to what were seeing
+                    playerPosX = startPosX - backgroundOffsetX + 500;
+                    playerPosY = startPosY - backgroundOffsetY + 500;
 
-                        getOffset(i, j);  
-                        (*backgroundArr[i][j]).x = bgPositionx + backgroundOffsetX;
-                        (*backgroundArr[i][j]).y = bgPositiony + backgroundOffsetY;                        
+
+                
+                    for(int i = 0; i < 15; i++)
+                    {
+                        for(int j = 0; j < 15; j++)
+                        {
+
+                            getOffset(i, j);  
+
+                            (*backgroundArr[i][j]).x = bgPositionx + backgroundOffsetX;
+                            (*backgroundArr[i][j]).y = bgPositiony + backgroundOffsetY;  
+                            // (*backgroundArr[i][j]).x += backgroundOffsetX;
+                            // (*backgroundArr[i][j]).y += backgroundOffsetY;                
                         
+                        }
+
                     }
 
                 }
-
+                
+                
+                
             }
-
+                            // printf("player Pos = %d, %d    ", playerPosX, playerPosY);
+            // printf("bgOffX = %d  ", backgroundOffsetX);
             if(currentlyWalking){
                 int frames = PLAYERWALKINGFRAMES;
 
@@ -616,116 +635,18 @@ int main() {
 
 void getOffset(int i, int j)
 {
-
-    switch (i)
-        {
-                  
-            case 14:
-                bgPositiony = 7000;
-                break;
-            case 13:
-                bgPositiony = 6000;
-                break;
-            case 12:
-                bgPositiony = 5000;
-                break;
-            case 11:
-                bgPositiony = 4000;
-                break;
-            case 10:
-                bgPositiony = 3000;
-                break;    
-            case 9:
-                bgPositiony = 2000;
-                break;
-            case 8:
-                bgPositiony = 1000;
-                break;
-            case 7:
-                bgPositiony = 0;
-                break;
-            case 6:
-                bgPositiony = -1000;
-                break;
-            case 5:
-                bgPositiony = -2000;
-                break;
-            case 4:
-                bgPositiony = -3000;
-                break;
-            case 3:
-                bgPositiony = -4000;
-                break;
-            case 2:
-                bgPositiony = -5000;
-                break;
-            case 1:
-                bgPositiony = -6000;
-                break;
-            case 0:
-                bgPositiony = -7000;
-                break;
-            }
-            switch (j)
-            {
-            case 14:
-                bgPositionx = 7000;
-                break;
-            case 13:
-                bgPositionx = 6000;
-                break;
-            case 12:
-                bgPositionx = 5000;
-                break;
-            case 11:
-                bgPositionx = 4000;
-                break;
-            case 10:
-                bgPositionx = 3000;
-                break;
-            case 9:
-                bgPositionx = 2000;
-                break;
-            case 8:
-                bgPositionx = 1000;
-                break;
-            case 7:
-                bgPositionx = 0;
-                break;
-            case 6:
-                bgPositionx = -1000;
-                break;
-            case 5:
-                bgPositionx = -2000;
-                break;
-            case 4:
-                bgPositionx = -3000;
-                break;
-            case 3:
-                bgPositionx = -4000;
-                break;
-            case 2:
-                bgPositionx = -5000;
-                break;
-            case 1:
-                bgPositionx = -6000;
-                break;
-            case 0:
-                bgPositionx = -7000;
-                break;
-            }
-
+    bgPositionx = (i * 1000) - startPosX;
+    bgPositiony = (j * 1000) - startPosY;
+   
 }
 
 double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
 {
     int multiplierX;
     int multiplierY;
-    //do this to get the center of the player
-    // double deltaX = MouseX - (playerX - (multiplierX * playerWidth)); 
-    // double deltaY = MouseY - (playerY - (multiplierY * playerHeight));
-    double deltaX = MouseX - ((WINDOW_WIDTH - playerWidth)/2);
-    double deltaY = MouseY - ((WINDOW_HEIGHT - playerHeight)/2);
+
+    double deltaX = MouseX - ((WINDOW_WIDTH - PLAYER_WIDTH)/2);
+    double deltaY = MouseY - ((WINDOW_HEIGHT - PLAYER_HEIGHT)/2);
     
 
     double angleBetweenPoints = SDL_atan2(deltaY, deltaX) * 180 / M_PI;
@@ -733,4 +654,30 @@ double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
     return angleBetweenPoints;
 
 
+}
+
+
+//Check if the next position is "valid"
+// for example if we're on the right edge of the map, dont allow the player to move right anymore
+int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down)
+{
+    if(playerPosX >= 15000 - (PLAYER_WIDTH/2))
+    {
+        if(right) return 0;
+    }
+    if(playerPosX <= 0 + (PLAYER_WIDTH/2))
+    {
+        if(left) return 0;
+    }
+    if(playerPosY >= 15000 - (PLAYER_HEIGHT/2))
+    {
+        if(down) return 0;
+    }
+    if(playerPosY <= 0 + (PLAYER_HEIGHT/2))
+    {
+        if(up) return 0;
+    }
+
+
+    return 1;
 }
