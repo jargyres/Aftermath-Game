@@ -77,8 +77,12 @@ int main() {
     SDL_Texture* castusSprite = NULL;
     SDL_Texture* backgroundTexture = NULL;
     SDL_Texture* titleBack1Tex = NULL;
+    SDL_Texture* titleBack2Tex = NULL;
+    SDL_Texture* titleBack3Tex = NULL;
     SDL_Texture* playOnTex = NULL;
     SDL_Texture* ExitOnTex = NULL;
+    SDL_Texture* playOffTex = NULL;
+    SDL_Texture* ExitOffTex = NULL;
     SDL_Texture* playerShootTex = NULL;
     SDL_Texture* bulletTex = NULL;
 
@@ -91,9 +95,13 @@ int main() {
     SDL_Surface* bulletSurface = IMG_Load("images/bullet.png");
     SDL_Surface* cactusSurface = IMG_Load("images/cactus.png");
     SDL_Surface* backgroundSurface = IMG_Load("images/background.png");
-    SDL_Surface* titleBack1Surface1 = IMG_Load("images/TitleFarBack.png");
+    SDL_Surface* titleBackSurface1 = IMG_Load("images/TitleFarBack.png");
+    SDL_Surface* titleBackSurface2 = IMG_Load("images/TitleMidBack.png");
+    SDL_Surface* titleBackSurface3 = IMG_Load("images/TitleCloseBack.png");
     SDL_Surface* playOnSurface = IMG_Load("images/PlayOn.png");
     SDL_Surface* exitOnSurface = IMG_Load("images/ExitOn.png");
+    SDL_Surface* playOffSurface = IMG_Load("images/PlayOff.png");
+    SDL_Surface* exitOffSurface = IMG_Load("images/ExitOff.png");
 
     // Make the textures using the renderer and the surfaces we made from the images
     spriteSheet = SDL_CreateTextureFromSurface(rend, surface);
@@ -102,9 +110,13 @@ int main() {
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
     castusSprite = SDL_CreateTextureFromSurface(rend, cactusSurface);
     backgroundTexture = SDL_CreateTextureFromSurface(rend, backgroundSurface);
-    titleBack1Tex = SDL_CreateTextureFromSurface(rend, titleBack1Surface1);
+    titleBack1Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface1);
+    titleBack2Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface2);
+    titleBack3Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface3);
     playOnTex = SDL_CreateTextureFromSurface(rend, playOnSurface);
     ExitOnTex = SDL_CreateTextureFromSurface(rend, exitOnSurface);
+    playOffTex = SDL_CreateTextureFromSurface(rend, playOffSurface);
+    ExitOffTex = SDL_CreateTextureFromSurface(rend, exitOffSurface);
 
     //free the images up from memory as they're in the textures now
     SDL_FreeSurface(surface);
@@ -113,9 +125,13 @@ int main() {
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
     SDL_FreeSurface(backgroundSurface);
-    SDL_FreeSurface(titleBack1Surface1);
+    SDL_FreeSurface(titleBackSurface1);
+    SDL_FreeSurface(titleBackSurface2);
+    SDL_FreeSurface(titleBackSurface3);
     SDL_FreeSurface(playOnSurface);
     SDL_FreeSurface(exitOnSurface);
+    SDL_FreeSurface(playOffSurface);
+    SDL_FreeSurface(exitOffSurface);
 
 
     //load our music
@@ -126,6 +142,8 @@ int main() {
 
     //this is the rectangle that will actually show the images
 
+    SDL_Rect titleBack2Rect;
+    SDL_Rect titleBack3Rect;
     SDL_Rect titleBack1Rect;
     titleBack1Rect.w = 1000;
     titleBack1Rect.h = 1000;
@@ -143,6 +161,10 @@ int main() {
     ExitOnRect.h = 1000;
     ExitOnRect.x = 0;
     ExitOnRect.y = 0;
+
+    SDL_Rect playOffRect;
+    SDL_Rect ExitOffRect;
+
 
 
 
@@ -277,16 +299,32 @@ int main() {
     SDL_QueryTexture(titleBack1Tex, NULL, NULL, &titleBack1Rect.w, &titleBack1Rect.h);
     titleBack1Rect.w = SCREENHEIGHT * 2.96;
     titleBack1Rect.h = SCREENHEIGHT;
+    SDL_QueryTexture(titleBack2Tex, NULL, NULL, &titleBack2Rect.w, &titleBack2Rect.h);
+    titleBack2Rect.w = SCREENHEIGHT * 2.96;
+    titleBack2Rect.h = SCREENHEIGHT;
+    SDL_QueryTexture(titleBack3Tex, NULL, NULL, &titleBack3Rect.w, &titleBack3Rect.h);
+    titleBack3Rect.w = SCREENHEIGHT * 2.96;
+    titleBack3Rect.h = SCREENHEIGHT;
     SDL_QueryTexture(playOnTex, NULL, NULL, &playOnRect.w, &playOnRect.h);
     playOnRect.w = 60 * 4;
     playOnRect.h = 40 * 4;
-    playOnRect.x = (WINDOW_WIDTH / 2) - 30;
+    playOnRect.x = (WINDOW_WIDTH / 2) - 140;
     playOnRect.y = (WINDOW_HEIGHT / 2) - 40;
     SDL_QueryTexture(ExitOnTex, NULL, NULL, &ExitOnRect.w, &ExitOnRect.h);
     ExitOnRect.w = 60 * 4;
     ExitOnRect.h = 40 * 4;
-    ExitOnRect.x = (WINDOW_WIDTH / 2) - 30;
+    ExitOnRect.x = (WINDOW_WIDTH / 2) - 140;
     ExitOnRect.y = (WINDOW_HEIGHT / 2) + 60;
+    SDL_QueryTexture(playOffTex, NULL, NULL, &playOffRect.w, &playOffRect.h);
+    playOffRect.w = 60 * 4;
+    playOffRect.h = 40 * 4;
+    playOffRect.x = (WINDOW_WIDTH / 2) - 140;
+    playOffRect.y = (WINDOW_HEIGHT / 2)- 40;
+    SDL_QueryTexture(ExitOffTex, NULL, NULL, &ExitOffRect.w, &ExitOffRect.h);
+    ExitOffRect.w = 60 * 4;
+    ExitOffRect.h = 40 * 4;
+    ExitOffRect.x = (WINDOW_WIDTH / 2) - 140;
+    ExitOffRect.y = (WINDOW_HEIGHT / 2) + 60;
     SDL_QueryTexture(spriteSheet, NULL, NULL, &textureRect.w, &textureRect.h);
     SDL_QueryTexture(spriteSheet2, NULL, NULL, &textureRect2.w, &textureRect2.h);
     SDL_QueryTexture(playerShootTex, NULL, NULL, &playerShootRectTex.w, &playerShootRectTex.h);
@@ -341,9 +379,6 @@ int main() {
         while(!quit && !play)
         {
             Uint64 start = SDL_GetPerformanceCounter();
-
-            
-
             while(SDL_PollEvent(&event))
             {
                 switch(event.type)
@@ -378,9 +413,13 @@ int main() {
                 }
             }
 
-            SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+            // SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
             SDL_RenderClear(rend);
             SDL_RenderCopy(rend, titleBack1Tex, NULL, &titleBack1Rect);
+            SDL_RenderCopy(rend, titleBack2Tex, NULL, &titleBack2Rect);
+            SDL_RenderCopy(rend, titleBack3Tex, NULL, &titleBack3Rect);
+            SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
+            SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
 
             if(play) titleScreen = 0;
 
@@ -391,21 +430,20 @@ int main() {
                 if(playHoveredOver && frame == 1)
                 {
                     SDL_RenderCopy(rend, playOnTex, NULL, &playOnRect);
+                    SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
                 }
                 else if(quitHoveredOver && frame == 1)
                 {
                     SDL_RenderCopy(rend, ExitOnTex, NULL, &ExitOnRect);
+                    SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
                 }
             }
-            else
-            {
-                SDL_RenderCopy(rend, titleBack1Tex, NULL, &titleBack1Rect);
-                titleBack1Rect.x -= 1;
-                SDL_RenderCopy(rend, playOnTex, NULL, &playOnRect);
-                SDL_RenderCopy(rend, ExitOnTex, NULL, &ExitOnRect);
-            }
 
-
+            titleBack1Rect.x -= 1;
+            titleBack2Rect.x -= 2;
+            titleBack3Rect.x -= 3;
+            printf("%d\n", titleBack3Rect.x);
+            if(titleBack3Rect.x < -1600) titleBack3Rect.x = 0;
 
             SDL_RenderPresent(rend);
             Uint64 end = SDL_GetPerformanceCounter();
