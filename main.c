@@ -5,20 +5,24 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#define LEVEL_WIDTH 15000
-#define LEVEL_HEIGHT 15000
-#define WINDOW_WIDTH 1000
+#define LEVEL_WIDTH 30000
+#define LEVEL_HEIGHT 30000
+#define WINDOW_WIDTH 1500
 #define WINDOW_HEIGHT 1000
 #define PLAYERWALKINGFRAMES 3
 #define PLAYER_WIDTH 128
 #define PLAYER_HEIGHT 128
+#define PLAYER_VELOCITY 5500
+#define BACKGROUND_SQUARE_SIZE 2000
 // #define M_PI 3.14159
 //Ubuntu should already have SDL so just run this command to get the Image processing files
 // "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-2.0-0"
 // and then you should have everything you need
 // ive been compiling with
-// "gcc main.c -lSDL2 -lSDL2main -lSDL2_image -lm -o main"
+// "gcc main.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lm -o main"
 // and then I run with "./main"
+int SCREENHEIGHT;
+int SCREENWIDTH;
 int bgPositionx = 0;
 int bgPositiony = 0;
 int startPosX = (LEVEL_WIDTH  / 2); 
@@ -33,10 +37,22 @@ int main() {
 //    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 //        printf("error %s\n", SDL_GetError());
 //    }
+    SDL_DisplayMode dm;
+    if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
+    {
+     SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+     return 1;
+    }
+
+    SCREENWIDTH = dm.w - (dm.w / 4);
+    SCREENHEIGHT = dm.h - (dm.h / 5);
+
+    printf("Screenwidth = %d, screenheight = %d", SCREENWIDTH, SCREENHEIGHT);
+
     SDL_Window *win = SDL_CreateWindow("Game",
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       WINDOW_WIDTH, WINDOW_HEIGHT,
+                                       SCREENWIDTH, SCREENHEIGHT,
                                        SDL_WINDOW_SHOWN);
 
     //create a renderer which sets up the graphics hardware
@@ -48,6 +64,9 @@ int main() {
     //this is what we will use to see keyboard events, or basically anything like that
     SDL_Event event;
     int quit = 0;
+
+    
+
     
 
     //Initialize some textures to nothing for now
@@ -136,8 +155,8 @@ int main() {
     SDL_Rect windowRect;
     windowRect.w = 128;
     windowRect.h = 128;
-    windowRect.x = (WINDOW_WIDTH - windowRect.w) / 2;
-    windowRect.y = (WINDOW_HEIGHT - windowRect.h) / 2;
+    windowRect.x = (SCREENWIDTH - windowRect.w) / 2;
+    windowRect.y = (SCREENHEIGHT - windowRect.h) / 2;
 
 
     SDL_Rect windowRect2;
@@ -163,8 +182,8 @@ int main() {
     SDL_Rect playerShootRectWin;
     playerShootRectWin.w = PLAYER_WIDTH;
     playerShootRectWin.h = PLAYER_HEIGHT;
-    playerShootRectWin.x = (WINDOW_WIDTH - playerShootRectWin.w) /2;
-    playerShootRectWin.y = (WINDOW_HEIGHT - playerShootRectWin.h) /2;
+    playerShootRectWin.x = (SCREENWIDTH - playerShootRectWin.w) /2;
+    playerShootRectWin.y = (SCREENHEIGHT - playerShootRectWin.h) /2;
 
     SDL_Rect playerShootRectTex;
     playerShootRectTex.x = 0;
@@ -241,6 +260,9 @@ int main() {
             (*backgroundArr[i][j]).h = 1000;
            
             SDL_QueryTexture(backgroundTexture, NULL, NULL, &(*backgroundArr[i][j]).w, &((*backgroundArr[i][j]).h));
+
+            (*backgroundArr[i][j]).w = BACKGROUND_SQUARE_SIZE;
+            (*backgroundArr[i][j]).h = BACKGROUND_SQUARE_SIZE;
         }
     }
 
@@ -251,8 +273,14 @@ int main() {
 
     // load the textures from the spriteSheets into their respective textureRects
     SDL_QueryTexture(title1Tex, NULL, NULL, &title1Rect.w, &title1Rect.h);
+    title1Rect.w = SCREENWIDTH;
+    title1Rect.h = SCREENHEIGHT;
     SDL_QueryTexture(title2Tex, NULL, NULL, &title2Rect.w, &title2Rect.h);
+    title2Rect.w = SCREENWIDTH;
+    title2Rect.h = SCREENHEIGHT;
     SDL_QueryTexture(title3Tex, NULL, NULL, &title3Rect.w, &title3Rect.h);
+    title3Rect.w = SCREENWIDTH;
+    title3Rect.h = SCREENHEIGHT;
     SDL_QueryTexture(spriteSheet, NULL, NULL, &textureRect.w, &textureRect.h);
     SDL_QueryTexture(spriteSheet2, NULL, NULL, &textureRect2.w, &textureRect2.h);
     SDL_QueryTexture(playerShootTex, NULL, NULL, &playerShootRectTex.w, &playerShootRectTex.h);
@@ -320,12 +348,13 @@ int main() {
                         break;
                     case SDL_MOUSEMOTION:
                         SDL_GetMouseState(&mouse_x, &mouse_y);
-                        if(mouse_x >= 400 && mouse_x <= 540 && mouse_y <= 600 && mouse_y >= 540)
+                        // printf("Mouse x = %d mouse y = %d", mouse_x, mouse_y);
+                        if(mouse_x >= ((2 * SCREENWIDTH) / 5 ) && mouse_x <= ((13 * SCREENWIDTH) / 25) && mouse_y <= (SCREENHEIGHT - (2 * SCREENHEIGHT / 5))  && mouse_y >= ((13 * SCREENHEIGHT) / 25))
                         {
                             playHoveredOver = 1;
                             quitHoveredOver = 0;
                         }
-                        else if(mouse_x >= 400 && mouse_x <= 540 && mouse_y <= 690 && mouse_y >= 630)
+                        else if(mouse_x >= ((2 * SCREENWIDTH) / 5 ) && mouse_x <= ((13 * SCREENWIDTH) / 25) && mouse_y <= ((69 * SCREENHEIGHT) / 100) && mouse_y >= ((63 * SCREENHEIGHT) / 100))
                         {
                             quitHoveredOver = 1;
                             playHoveredOver = 0;
@@ -464,10 +493,10 @@ int main() {
             x_vel = y_vel = 0;
             //these should be between 200 or 300 to look good but
             //I want to be fast when testing
-            if(up && !down) y_vel = 1200;
-            if(down && !up) y_vel = -1200;
-            if(left && !right) x_vel = 1200;
-            if(right && !left) x_vel = -1200;
+            if(up && !down) y_vel = PLAYER_VELOCITY;
+            if(down && !up) y_vel = -1 * PLAYER_VELOCITY;
+            if(left && !right) x_vel = PLAYER_VELOCITY;
+            if(right && !left) x_vel = -1 * PLAYER_VELOCITY;
             if(!up && !down && !left && !right)
             {
                 currentlyWalking = 0;
@@ -485,8 +514,8 @@ int main() {
                     backgroundOffsetX += x_vel / 60;
                     backgroundOffsetY += y_vel / 60;
                     //this normalizes the players position to what were seeing
-                    playerPosX = startPosX - backgroundOffsetX + 500;
-                    playerPosY = startPosY - backgroundOffsetY + 500;
+                    playerPosX = startPosX - backgroundOffsetX + (SCREENWIDTH / 2);
+                    playerPosY = startPosY - backgroundOffsetY + (SCREENHEIGHT / 2);
 
 
                 
@@ -635,8 +664,8 @@ int main() {
 
 void getOffset(int i, int j)
 {
-    bgPositionx = (i * 1000) - startPosX;
-    bgPositiony = (j * 1000) - startPosY;
+    bgPositionx = (i * BACKGROUND_SQUARE_SIZE) - startPosX;
+    bgPositiony = (j * BACKGROUND_SQUARE_SIZE) - startPosY;
    
 }
 
@@ -645,8 +674,8 @@ double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
     int multiplierX;
     int multiplierY;
 
-    double deltaX = MouseX - ((WINDOW_WIDTH - PLAYER_WIDTH)/2);
-    double deltaY = MouseY - ((WINDOW_HEIGHT - PLAYER_HEIGHT)/2);
+    double deltaX = MouseX - ((SCREENWIDTH - PLAYER_WIDTH)/2);
+    double deltaY = MouseY - ((SCREENHEIGHT - PLAYER_HEIGHT)/2);
     
 
     double angleBetweenPoints = SDL_atan2(deltaY, deltaX) * 180 / M_PI;
@@ -661,7 +690,7 @@ double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
 // for example if we're on the right edge of the map, dont allow the player to move right anymore
 int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down)
 {
-    if(playerPosX >= 15000 - (PLAYER_WIDTH/2))
+    if(playerPosX >= LEVEL_WIDTH - (PLAYER_WIDTH/2))
     {
         if(right) return 0;
     }
@@ -669,7 +698,7 @@ int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, i
     {
         if(left) return 0;
     }
-    if(playerPosY >= 15000 - (PLAYER_HEIGHT/2))
+    if(playerPosY >= LEVEL_HEIGHT - (PLAYER_HEIGHT/2))
     {
         if(down) return 0;
     }
