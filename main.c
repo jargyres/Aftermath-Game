@@ -4,6 +4,7 @@
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
+#include "player.h"
 
 #define LEVEL_WIDTH 30000
 #define LEVEL_HEIGHT 30000
@@ -14,7 +15,7 @@
 #define PLAYER_HEIGHT 128
 #define PLAYER_VELOCITY 300
 #define BACKGROUND_SQUARE_SIZE 2000
-#define M_PI 3.14159265359
+//#define M_PI 3.14159265359
  
 // #define M_PI 3.14159
 //Ubuntu should already have SDL so just run this command to get the Image processing files
@@ -30,7 +31,7 @@ int bgPositiony = 0;
 int startPosX = (LEVEL_WIDTH  / 2); 
 int startPosY = (LEVEL_HEIGHT / 2);
 void getOffset(int i, int j);
-double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight);
+double getAngle(int MouseX, int MouseY);
 int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
 
 int main() {
@@ -69,11 +70,12 @@ int main() {
 
     
 
-    
+    player p;
+
+    player_Constructor(&p, "images/player.png", "images/playerBack.png", 
+                    "images/playerShoot.png",SCREENWIDTH, SCREENHEIGHT, rend);
 
     //Initialize some textures to nothing for now
-    SDL_Texture* spriteSheet = NULL;
-    SDL_Texture* spriteSheet2 = NULL;
     SDL_Texture* castusSprite = NULL;
     SDL_Texture* backgroundTexture = NULL;
     SDL_Texture* titleBack1Tex = NULL;
@@ -83,15 +85,11 @@ int main() {
     SDL_Texture* ExitOnTex = NULL;
     SDL_Texture* playOffTex = NULL;
     SDL_Texture* ExitOffTex = NULL;
-    SDL_Texture* playerShootTex = NULL;
     SDL_Texture* bulletTex = NULL;
 
-    //hello
 
     //load the image into memory using SDL_Image library functions
-    SDL_Surface* surface = IMG_Load("images/player.png");
-    SDL_Surface* surface2 = IMG_Load("images/playerBack.png");
-    SDL_Surface* playerShootSurface = IMG_Load("images/playerShoot.png");
+
     SDL_Surface* bulletSurface = IMG_Load("images/bullet.png");
     SDL_Surface* cactusSurface = IMG_Load("images/cactus.png");
     SDL_Surface* backgroundSurface = IMG_Load("images/background.png");
@@ -104,9 +102,6 @@ int main() {
     SDL_Surface* exitOffSurface = IMG_Load("images/ExitOff.png");
 
     // Make the textures using the renderer and the surfaces we made from the images
-    spriteSheet = SDL_CreateTextureFromSurface(rend, surface);
-    spriteSheet2 = SDL_CreateTextureFromSurface(rend, surface2);
-    playerShootTex = SDL_CreateTextureFromSurface(rend, playerShootSurface);
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
     castusSprite = SDL_CreateTextureFromSurface(rend, cactusSurface);
     backgroundTexture = SDL_CreateTextureFromSurface(rend, backgroundSurface);
@@ -118,10 +113,6 @@ int main() {
     playOffTex = SDL_CreateTextureFromSurface(rend, playOffSurface);
     ExitOffTex = SDL_CreateTextureFromSurface(rend, exitOffSurface);
 
-    //free the images up from memory as they're in the textures now
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface2);
-    SDL_FreeSurface(playerShootSurface);
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
     SDL_FreeSurface(backgroundSurface);
@@ -137,7 +128,7 @@ int main() {
     //load our music
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_Music *titleMusic = NULL;
-    titleMusic = Mix_LoadMUS("music/Basshunter.mp3");
+    titleMusic = Mix_LoadMUS("music/game_music.mp3");
     
 
     //this is the rectangle that will actually show the images
@@ -164,57 +155,6 @@ int main() {
 
     SDL_Rect playOffRect;
     SDL_Rect ExitOffRect;
-
-
-
-
-
-
-    /****************/
-    /* PLAYER RECTS */
-    /****************/
-
-    
-
-    SDL_Rect windowRect;
-    windowRect.w = 128;
-    windowRect.h = 128;
-    windowRect.x = (SCREENWIDTH - windowRect.w) / 2;
-    windowRect.y = (SCREENHEIGHT - windowRect.h) / 2;
-
-
-    SDL_Rect windowRect2;
-    windowRect2.w = PLAYER_WIDTH;
-    windowRect2.h = PLAYER_HEIGHT;
-    windowRect2.x = windowRect.x;
-    windowRect2.y = windowRect.y;
-
-    //this is a rectangle to hold our whole image file,
-    // giving us the ability to choose coordinates so we get the right sprite
-    SDL_Rect textureRect;
-    textureRect.x = 0;
-    textureRect.y = 0;
-    textureRect.w = 192;
-    textureRect.h = 64;
-
-    SDL_Rect textureRect2;
-    textureRect2.x = 0;
-    textureRect2.y = 0;
-    textureRect2.w = 192;
-    textureRect2.h = 64;
-
-    SDL_Rect playerShootRectWin;
-    playerShootRectWin.w = PLAYER_WIDTH;
-    playerShootRectWin.h = PLAYER_HEIGHT;
-    playerShootRectWin.x = (SCREENWIDTH - playerShootRectWin.w) /2;
-    playerShootRectWin.y = (SCREENHEIGHT - playerShootRectWin.h) /2;
-
-    SDL_Rect playerShootRectTex;
-    playerShootRectTex.x = 0;
-    playerShootRectTex.y = 0;
-    playerShootRectTex.w = 128;
-    playerShootRectTex.h = 64;
-
 
 
 
@@ -325,15 +265,15 @@ int main() {
     ExitOffRect.h = 40 * 4;
     ExitOffRect.x = (WINDOW_WIDTH / 2) - 140;
     ExitOffRect.y = (WINDOW_HEIGHT / 2) + 60;
-    SDL_QueryTexture(spriteSheet, NULL, NULL, &textureRect.w, &textureRect.h);
-    SDL_QueryTexture(spriteSheet2, NULL, NULL, &textureRect2.w, &textureRect2.h);
-    SDL_QueryTexture(playerShootTex, NULL, NULL, &playerShootRectTex.w, &playerShootRectTex.h);
+    // SDL_QueryTexture(spriteSheet, NULL, NULL, &textureRect.w, &textureRect.h);
+    // SDL_QueryTexture(spriteSheet2, NULL, NULL, &textureRect2.w, &textureRect2.h);
+    // SDL_QueryTexture(playerShootTex, NULL, NULL, &playerShootRectTex.w, &playerShootRectTex.h);
 
 
     // make the widths 64 pixels
-    textureRect.w /= PLAYERWALKINGFRAMES;
-    textureRect2.w /= PLAYERWALKINGFRAMES;
-    playerShootRectTex.w /= 2;
+    // textureRect.w /= PLAYERWALKINGFRAMES;
+    // textureRect2.w /= PLAYERWALKINGFRAMES;
+    // playerShootRectTex.w /= 2;
 
 
     //just values 0 or 1 telling us which direction were going
@@ -442,7 +382,7 @@ int main() {
             titleBack1Rect.x -= 1;
             titleBack2Rect.x -= 2;
             titleBack3Rect.x -= 3;
-            printf("%d\n", titleBack3Rect.x);
+            //printf("%d\n", titleBack3Rect.x);
             if(titleBack3Rect.x < -1600) titleBack3Rect.x = 0;
 
             SDL_RenderPresent(rend);
@@ -524,7 +464,7 @@ int main() {
                         break;
                     case SDL_MOUSEMOTION:
                         SDL_GetMouseState(&mouse_x, &mouse_y);
-                        angle = getAngle(mouse_x, mouse_y, windowRect.w, windowRect.h);
+                        angle = getAngle(mouse_x, mouse_y);
                         // printf("angle = %f", angle);
                         break;
 
@@ -581,42 +521,14 @@ int main() {
                 
                 
             }
-                            // printf("player Pos = %d, %d    ", playerPosX, playerPosY);
-            // printf("bgOffX = %d  ", backgroundOffsetX);
-            if(currentlyWalking){
-                int frames = PLAYERWALKINGFRAMES;
-
-                int delayPerFrame = 200;
-
-                int frame = (SDL_GetTicks() / delayPerFrame) % frames;
 
 
-                textureRect.x = frame * textureRect.w;
-                textureRect2.x = frame * textureRect2.w;
-
-
-            }
-            else if(currentlyShooting)
-            {
-                int ticks = SDL_GetTicks() / 150;
-                int shootFrame = (ticks) % 2;
-                playerShootRectTex.x = shootFrame * playerShootRectTex.w;
-
-            }
-            else
-            {
-                //if we arent walking just show the first sprite so it looks like were standing still
-                textureRect.x = 0;
-                textureRect2.x = 0;
-
-            }
-
-            //basically set up the values of RGB we will use
+            // //basically set up the values of RGB we will use
             SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
             //clear the renderer so we dont just get garbage on our screen
             SDL_RenderClear(rend);
 
-
+            
             for(int i = 0; i < 15; i++)
             {
                 for(int j = 0; j < 15; j++)
@@ -624,53 +536,9 @@ int main() {
                     SDL_RenderCopy(rend, backgroundTexture, NULL, &(*backgroundArr[i][j]));
                 }
             }
+            player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp,
+                            angle, rend);
 
-            if(lastRight && !currentlyUp && !currentlyShooting)
-            {
-                //this'll draw the right left images
-                SDL_RenderCopyEx(rend, spriteSheet, &textureRect, &windowRect, 0.0, NULL, flip);
-            }
-            else if(currentlyUp)
-            {
-                //this'll draw the walking up sprites
-                SDL_RenderCopy(rend, spriteSheet2, &textureRect2, &windowRect2);
-
-            }
-            else if(currentlyShooting && lastRight)
-            {
-                if((angle > 0 && angle < 40) || (angle < 0 && angle > -40))
-                {
-                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, angle, NULL, flip);
-                }
-                else
-                {
-                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, 0.0, NULL, flip);
-
-                }
-                
-
-            }
-            else if(currentlyShooting && !lastRight)
-            {
-                                // printf("%f ", angle);
-                //-135
-                //-150
-                if((angle > -179 && angle < -130)  || (angle < 180 && angle > 140))
-                {
-                    SDL_RenderCopyEx(rend, playerShootTex, &playerShootRectTex, &windowRect, angle - 180 , NULL, SDL_FLIP_NONE);
-                }
-                else
-                {
-                    SDL_RenderCopy(rend, playerShootTex, &playerShootRectTex, &windowRect);
-                }
-                
-
-            }
-            else
-            {
-                SDL_RenderCopy(rend, spriteSheet, &textureRect, &windowRect);
-
-            }
 
             // finally push the renderer to the hardware, making the sprites appear on the screen
             SDL_RenderPresent(rend);
@@ -686,9 +554,7 @@ int main() {
 
 
     //clean up our resources before we exit
-    SDL_DestroyTexture(spriteSheet);
-    SDL_DestroyTexture(spriteSheet2);
-    SDL_DestroyTexture(playerShootTex);
+    player_Free(&p);
     SDL_DestroyTexture(bulletTex);
     SDL_DestroyTexture(castusSprite);
     SDL_DestroyTexture(backgroundTexture);
@@ -710,7 +576,7 @@ void getOffset(int i, int j)
    
 }
 
-double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
+double getAngle(int MouseX, int MouseY)
 {
     int multiplierX;
     int multiplierY;
@@ -719,7 +585,7 @@ double getAngle(int MouseX, int MouseY, int playerWidth, int playerHeight)
     double deltaY = MouseY - ((SCREENHEIGHT - PLAYER_HEIGHT)/2);
     
 
-    double angleBetweenPoints = SDL_atan2(deltaY, deltaX) * 180 / M_PI;
+    double angleBetweenPoints = SDL_atan2(deltaY, deltaX) * 180 / 3.14159;
 
     return angleBetweenPoints;
 
