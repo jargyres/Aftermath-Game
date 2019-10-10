@@ -225,6 +225,7 @@ int main() {
     int bulletsOnScreen = 0;
     int playerPosX = startPosX;
     int playerPosY = startPosX;
+    background_SetPlayerPos(&bg, playerPosX, playerPosY);
     double angle = 0.0;
     
     if(titleScreen && !play)
@@ -405,7 +406,7 @@ int main() {
                 y_vel = 0;
             }
 
-            background_Move(&bg, currentlyWalking, playerPosX, playerPosY, right, left, up, down, SCREENWIDTH, SCREENHEIGHT);
+            background_Move(&bg, currentlyWalking, right, left, up, down, SCREENWIDTH, SCREENHEIGHT);
 
 
             // //basically set up the values of RGB we will use

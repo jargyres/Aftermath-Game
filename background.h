@@ -10,11 +10,14 @@ typedef struct {
 
     SDL_Texture* backgroundTexture;
 
-    
+    int playerposx;
+    int playerposy;
+    int bgPosX;
+    int bgPosY;
 
 
     
-    SDL_Rect bg00, bg01, bg02, bg03, bg04, bg05, bg06, bg07, bg08, bg09, bg010, bg011, bg012, bg013, bg014;
+    SDL_Rect b00, b01, b02, b03, b04, b05, b06, b07, b08, b09, b010, b011, b012, b013, b014;
     SDL_Rect bg10, bg11, bg12, bg13, bg14, bg15, bg16, bg17, bg18, bg19, bg11_0, bg11_1, bg11_2, bg11_3, bg11_4;
     SDL_Rect bg20, bg21, bg22, bg23, bg24, bg25, bg26, bg27, bg28, bg29, bg210, bg211, bg212, bg213, bg214;
     SDL_Rect bg30, bg31, bg32, bg33, bg34, bg35, bg36, bg37, bg38, bg39, bg310, bg311, bg312, bg313, bg314;
@@ -38,7 +41,9 @@ typedef struct {
 
 void background_Constructor(background * me, char* backgroundImagePath, SDL_Renderer *rend);
 
-void background_Move(background * me, int currentlyWalking, int playerPosX, int playerPosY, 
+void background_SetPlayerPos(background * me, int playerPosX, int playerPosY);
+
+void background_Move(background * me, int currentlyWalking, 
                     int right, int left, int up, int down, 
                     int SCREENWIDTH, int SCREENHEIGHT);
 void background_Draw(background * me, SDL_Renderer *rend);
