@@ -5,6 +5,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include "player.h"
+#include "background.h"
+
 
 #define LEVEL_WIDTH 30000
 #define LEVEL_HEIGHT 30000
@@ -22,7 +24,7 @@
 // "sudo apt-get install libsdl2-image-2.0-0 libsdl2-image-dev libsdl2-mixer-2.0-0"
 // and then you should have everything you need
 // ive been compiling with
-// "gcc main.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lm -o main"
+//"gcc main.c player.c background.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lm -o main"
 // and then I run with "./main"
 int SCREENHEIGHT;
 int SCREENWIDTH;
@@ -30,9 +32,9 @@ int bgPositionx = 0;
 int bgPositiony = 0;
 int startPosX = (LEVEL_WIDTH  / 2); 
 int startPosY = (LEVEL_HEIGHT / 2);
-void getOffset(int i, int j);
+// void getOffset(int i, int j);
 double getAngle(int MouseX, int MouseY);
-int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
+// int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
 
 int main() {
 
@@ -71,13 +73,17 @@ int main() {
     
 
     player p;
+    background bg;
 
     player_Constructor(&p, "images/player.png", "images/playerBack.png", 
                     "images/playerShoot.png",SCREENWIDTH, SCREENHEIGHT, rend);
 
+    background_Constructor(&bg, "images/background.png", rend);
+
+    
+
     //Initialize some textures to nothing for now
     SDL_Texture* castusSprite = NULL;
-    SDL_Texture* backgroundTexture = NULL;
     SDL_Texture* titleBack1Tex = NULL;
     SDL_Texture* titleBack2Tex = NULL;
     SDL_Texture* titleBack3Tex = NULL;
@@ -92,7 +98,6 @@ int main() {
 
     SDL_Surface* bulletSurface = IMG_Load("images/bullet.png");
     SDL_Surface* cactusSurface = IMG_Load("images/cactus.png");
-    SDL_Surface* backgroundSurface = IMG_Load("images/background.png");
     SDL_Surface* titleBackSurface1 = IMG_Load("images/TitleFarBack.png");
     SDL_Surface* titleBackSurface2 = IMG_Load("images/TitleMidBack.png");
     SDL_Surface* titleBackSurface3 = IMG_Load("images/TitleCloseBack.png");
@@ -104,7 +109,6 @@ int main() {
     // Make the textures using the renderer and the surfaces we made from the images
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
     castusSprite = SDL_CreateTextureFromSurface(rend, cactusSurface);
-    backgroundTexture = SDL_CreateTextureFromSurface(rend, backgroundSurface);
     titleBack1Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface1);
     titleBack2Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface2);
     titleBack3Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface3);
@@ -115,7 +119,6 @@ int main() {
 
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
-    SDL_FreeSurface(backgroundSurface);
     SDL_FreeSurface(titleBackSurface1);
     SDL_FreeSurface(titleBackSurface2);
     SDL_FreeSurface(titleBackSurface3);
@@ -158,81 +161,6 @@ int main() {
 
 
 
-    /********************/
-    /* BACKGROUND RECTS */
-    /********************/
-
-
-    //now we want 15 by 15 view of the map
-    
-
-    //set up our Rects for our background in the messiest way possible
-
-    //there has to be a better way of doing this but oh well
-
-    //if this was python I could dynamically name variables but we can't in C so we have to manually do it
-
-    SDL_Rect bg00, bg01, bg02, bg03, bg04, bg05, bg06, bg07, bg08, bg09, bg010, bg011, bg012, bg013, bg014;
-    SDL_Rect bg10, bg11, bg12, bg13, bg14, bg15, bg16, bg17, bg18, bg19, bg11_0, bg11_1, bg11_2, bg11_3, bg11_4;
-    SDL_Rect bg20, bg21, bg22, bg23, bg24, bg25, bg26, bg27, bg28, bg29, bg210, bg211, bg212, bg213, bg214;
-    SDL_Rect bg30, bg31, bg32, bg33, bg34, bg35, bg36, bg37, bg38, bg39, bg310, bg311, bg312, bg313, bg314;
-    SDL_Rect bg40, bg41, bg42, bg43, bg44, bg45, bg46, bg47, bg48, bg49, bg410, bg411, bg412, bg413, bg414;
-    SDL_Rect bg50, bg51, bg52, bg53, bg54, bg55, bg56, bg57, bg58, bg59, bg510, bg511, bg512, bg513, bg514;
-    SDL_Rect bg60, bg61, bg62, bg63, bg64, bg65, bg66, bg67, bg68, bg69, bg610, bg611, bg612, bg613, bg614;
-    SDL_Rect bg70, bg71, bg72, bg73, bg74, bg75, bg76, bg77, bg78, bg79, bg710, bg711, bg712, bg713, bg714;
-    SDL_Rect bg80, bg81, bg82, bg83, bg84, bg85, bg86, bg87, bg88, bg89, bg810, bg811, bg812, bg813, bg814;
-    SDL_Rect bg90, bg91, bg92, bg93, bg94, bg95, bg96, bg97, bg98, bg99, bg910, bg911, bg912, bg913, bg914;
-    SDL_Rect bg100, bg101, bg102, bg103, bg104, bg105, bg106, bg107, bg108, bg109, bg1010, bg1011, gb1012, bg1013, bg1014;
-    SDL_Rect bg110, bg111, bg112, bg113, bg114, bg115, bg116, bg117, bg118, bg119, bg1110, bg1111, gb1112, bg1113, bg1114;
-    SDL_Rect bg120, bg121, bg122, bg123, bg124, bg125, bg126, bg127, bg128, bg129, bg1210, bg1211, gb1212, bg1213, bg1214;
-    SDL_Rect bg130, bg131, bg132, bg133, bg134, bg135, bg136, bg137, bg138, bg139, bg1310, bg1311, gb1312, bg1313, bg1314;
-    SDL_Rect bg140, bg141, bg142, bg143, bg144, bg145, b146, bg147, bg148, b149, bg1410, bg1411, gb1412, bg1413, bg1414;
-
-
-    //throw all the pointers of them into a 15x15 array of pointers for ease of calling later
-    SDL_Rect *backgroundArr[15][15] = {
-        {&bg00, &bg01, &bg02, &bg03, &bg04, &bg05, &bg06, &bg07, &bg08, &bg09, &bg010, &bg011, &bg012, &bg013, &bg014},
-        {&bg10, &bg11, &bg12, &bg13, &bg14, &bg15, &bg16, &bg17, &bg18, &bg19, &bg11_0, &bg11_1, &bg11_2, &bg11_3, &bg11_4},
-        {&bg20, &bg21, &bg22, &bg23, &bg24, &bg25, &bg26, &bg27, &bg28, &bg29, &bg210, &bg211, &bg212, &bg213, &bg214},
-        {&bg30, &bg31, &bg32, &bg33, &bg34, &bg35, &bg36, &bg37, &bg38, &bg39, &bg310, &bg311, &bg312, &bg313, &bg314},
-        {&bg40, &bg41, &bg42, &bg43, &bg44, &bg45, &bg46, &bg47, &bg48, &bg49, &bg410, &bg411, &bg412, &bg413, &bg414},
-        {&bg50, &bg51, &bg52, &bg53, &bg54, &bg55, &bg56, &bg57, &bg58, &bg59, &bg510, &bg511, &bg512, &bg513, &bg514},
-        {&bg60, &bg61, &bg62, &bg63, &bg64, &bg65, &bg66, &bg67, &bg68, &bg69, &bg610, &bg611, &bg612, &bg613, &bg614},
-        {&bg70, &bg71, &bg72, &bg73, &bg74, &bg75, &bg76, &bg77, &bg78, &bg79, &bg710, &bg711, &bg712, &bg713, &bg714},
-        {&bg80, &bg81, &bg82, &bg83, &bg84, &bg85, &bg86, &bg87, &bg88, &bg89, &bg810, &bg811, &bg812, &bg813, &bg814},
-        {&bg90, &bg91, &bg92, &bg93, &bg94, &bg95, &bg96, &bg97, &bg98, &bg99, &bg910, &bg911, &bg912, &bg913, &bg914},
-        {&bg100, &bg101, &bg102, &bg103, &bg104, &bg105, &bg106, &bg107, &bg108, &bg109, &bg1010, &bg1011, &gb1012, &bg1013, &bg1014},
-        {&bg110, &bg111, &bg112, &bg113, &bg114, &bg115, &bg116, &bg117, &bg118, &bg119, &bg1110, &bg1111, &gb1112, &bg1113, &bg1114},
-        {&bg120, &bg121, &bg122, &bg123, &bg124, &bg125, &bg126, &bg127, &bg128, &bg129, &bg1210, &bg1211, &gb1212, &bg1213, &bg1214},
-        {&bg130, &bg131, &bg132, &bg133, &bg134, &bg135, &bg136, &bg137, &bg138, &bg139, &bg1310, &bg1311, &gb1312, &bg1313, &bg1314},
-        {&bg140, &bg141, &bg142, &bg143, &bg144, &bg145, &b146, &bg147, &bg148, &b149, &bg1410, &bg1411, &gb1412, &bg1413, &bg1414}
-
-    };
-
-    //Query all the textures into their respective Rects
-
-    for(int i = 0; i < 15; i++)
-    {
-        for(int j = 0; j < 15; j++)
-        {
-            getOffset(i, j);
-            // bgPositionx = i * 1000;
-            // bgPositiony = j * 1000;
-            (*backgroundArr[i][j]).x = bgPositionx;
-            (*backgroundArr[i][j]).y = bgPositiony;
-            (*backgroundArr[i][j]).w = 1000;
-            (*backgroundArr[i][j]).h = 1000;
-           
-            SDL_QueryTexture(backgroundTexture, NULL, NULL, &(*backgroundArr[i][j]).w, &((*backgroundArr[i][j]).h));
-
-            (*backgroundArr[i][j]).w = BACKGROUND_SQUARE_SIZE;
-            (*backgroundArr[i][j]).h = BACKGROUND_SQUARE_SIZE;
-        }
-    }
-
-
-    
-
 
 
     // load the textures from the spriteSheets into their respective textureRects
@@ -265,15 +193,7 @@ int main() {
     ExitOffRect.h = 40 * 4;
     ExitOffRect.x = (WINDOW_WIDTH / 2) - 140;
     ExitOffRect.y = (WINDOW_HEIGHT / 2) + 60;
-    // SDL_QueryTexture(spriteSheet, NULL, NULL, &textureRect.w, &textureRect.h);
-    // SDL_QueryTexture(spriteSheet2, NULL, NULL, &textureRect2.w, &textureRect2.h);
-    // SDL_QueryTexture(playerShootTex, NULL, NULL, &playerShootRectTex.w, &playerShootRectTex.h);
 
-
-    // make the widths 64 pixels
-    // textureRect.w /= PLAYERWALKINGFRAMES;
-    // textureRect2.w /= PLAYERWALKINGFRAMES;
-    // playerShootRectTex.w /= 2;
 
 
     //just values 0 or 1 telling us which direction were going
@@ -485,42 +405,7 @@ int main() {
                 y_vel = 0;
             }
 
-            // printf("playerXpos = %d playerYPos = %d\n", playerPosX, playerPosY);
-            if(currentlyWalking)
-            {
-
-                //this offset "moves" the player
-                if(validMoveMent(playerPosX, playerPosY, right, left, up, down))
-                {
-                    backgroundOffsetX += x_vel / 60;
-                    backgroundOffsetY += y_vel / 60;
-                    //this normalizes the players position to what were seeing
-                    playerPosX = startPosX - backgroundOffsetX + (SCREENWIDTH / 2);
-                    playerPosY = startPosY - backgroundOffsetY + (SCREENHEIGHT / 2);
-
-
-                
-                    for(int i = 0; i < 15; i++)
-                    {
-                        for(int j = 0; j < 15; j++)
-                        {
-
-                            getOffset(i, j);  
-
-                            (*backgroundArr[i][j]).x = bgPositionx + backgroundOffsetX;
-                            (*backgroundArr[i][j]).y = bgPositiony + backgroundOffsetY;  
-                            // (*backgroundArr[i][j]).x += backgroundOffsetX;
-                            // (*backgroundArr[i][j]).y += backgroundOffsetY;                
-                        
-                        }
-
-                    }
-
-                }
-                
-                
-                
-            }
+            background_Move(&bg, currentlyWalking, playerPosX, playerPosY, right, left, up, down, SCREENWIDTH, SCREENHEIGHT);
 
 
             // //basically set up the values of RGB we will use
@@ -528,14 +413,8 @@ int main() {
             //clear the renderer so we dont just get garbage on our screen
             SDL_RenderClear(rend);
 
-            
-            for(int i = 0; i < 15; i++)
-            {
-                for(int j = 0; j < 15; j++)
-                {
-                    SDL_RenderCopy(rend, backgroundTexture, NULL, &(*backgroundArr[i][j]));
-                }
-            }
+            background_Draw(&bg, rend);
+
             player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp,
                             angle, rend);
 
@@ -555,9 +434,9 @@ int main() {
 
     //clean up our resources before we exit
     player_Free(&p);
+    background_Free(&bg);
     SDL_DestroyTexture(bulletTex);
     SDL_DestroyTexture(castusSprite);
-    SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(titleBack1Tex);
     SDL_DestroyTexture(playOnTex);
     SDL_DestroyTexture(ExitOnTex);
@@ -569,12 +448,7 @@ int main() {
     return 0;
 }
 
-void getOffset(int i, int j)
-{
-    bgPositionx = (i * BACKGROUND_SQUARE_SIZE) - startPosX;
-    bgPositiony = (j * BACKGROUND_SQUARE_SIZE) - startPosY;
-   
-}
+
 
 double getAngle(int MouseX, int MouseY)
 {
@@ -593,27 +467,3 @@ double getAngle(int MouseX, int MouseY)
 }
 
 
-//Check if the next position is "valid"
-// for example if we're on the right edge of the map, dont allow the player to move right anymore
-int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down)
-{
-    if(playerPosX >= LEVEL_WIDTH - (PLAYER_WIDTH/2))
-    {
-        if(right) return 0;
-    }
-    if(playerPosX <= 0 + (PLAYER_WIDTH/2))
-    {
-        if(left) return 0;
-    }
-    if(playerPosY >= LEVEL_HEIGHT - (PLAYER_HEIGHT/2))
-    {
-        if(down) return 0;
-    }
-    if(playerPosY <= 0 + (PLAYER_HEIGHT/2))
-    {
-        if(up) return 0;
-    }
-
-
-    return 1;
-}
