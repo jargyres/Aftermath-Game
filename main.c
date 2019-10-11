@@ -77,11 +77,11 @@ int main() {
 
     player_Constructor(&p, "images/player.png", "images/playerBack.png", 
                     "images/playerShoot.png", "images/bullet.png", 
-                    "images/playerWalkDown.png","images/playerShootDown.png",
+                    "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png",
                     SCREENWIDTH, SCREENHEIGHT, 
                     rend);
 
-    background_Constructor(&bg, "images/background.png", rend);
+    background_Constructor(&bg, "images/background.png", "images/minimap.png","images/minimapArrow.png", rend);
 
     
 
@@ -230,6 +230,7 @@ int main() {
     int bulletsOnScreen = 0;
     int playerPosX = startPosX;
     int playerPosY = startPosX;
+    int miniMapShowing = 0;
     background_SetPlayerPos(&bg, playerPosX, playerPosY);
     double angle = 0.0;
     
@@ -367,6 +368,10 @@ int main() {
                             case SDL_SCANCODE_SPACE:
                                 currentlyShooting = 1;
                                 break;
+                            case SDL_SCANCODE_E:
+                                if(miniMapShowing) miniMapShowing = 0;
+                                else if(!miniMapShowing) miniMapShowing = 1;
+                                break;
                         }
                         break;
                     case SDL_KEYUP:
@@ -378,6 +383,7 @@ int main() {
                                 up = 0;
                                 lastDown = 0;
                                 lastRight = 0;
+                                currentlyUp = 1;
                                 break;
                             case SDL_SCANCODE_A:
                             case SDL_SCANCODE_LEFT:
@@ -433,7 +439,7 @@ int main() {
             //clear the renderer so we dont just get garbage on our screen
             SDL_RenderClear(rend);
 
-            background_Draw(&bg, rend);
+            background_Draw(&bg, miniMapShowing, lastRight, lastDown, currentlyUp,rend);
 
             player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp, lastDown, up, down, left, right,
                             angle, rend);

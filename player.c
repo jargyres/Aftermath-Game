@@ -19,7 +19,7 @@ int bulletsDirection[10] = {RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIG
 int getBulletOffSetX(player * me, int direction);
 int getBulletOffsetY(player * me, int direction);
 
-void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
+void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
 
     //window rect that will hold both the rect for the basic left and
     //right walking as well as the shooting rects
@@ -70,6 +70,7 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->bulletTex = NULL;
     me->walkingDownTex = NULL;
     me->shootDownTex = NULL;
+    me->shootUpTex == NULL;
     
     SDL_Surface* surface = IMG_Load(normalImagePath);
     SDL_Surface* surface2 = IMG_Load(upImagePath);
@@ -77,6 +78,7 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     SDL_Surface* surface4 = IMG_Load(bulletImagePath);
     SDL_Surface* surface5 = IMG_Load(downImagePath);
     SDL_Surface* surface6 = IMG_Load(downShootImagePath);
+    SDL_Surface* surface7 = IMG_Load(upShootImagePath);
 
     me->normalWalkingTex = SDL_CreateTextureFromSurface(rend, surface);
 
@@ -90,12 +92,15 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
 
     me->shootDownTex = SDL_CreateTextureFromSurface(rend, surface6);
 
+    me->shootUpTex = SDL_CreateTextureFromSurface(rend, surface7);
+
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface2);
     SDL_FreeSurface(surface3);
     SDL_FreeSurface(surface4);
     SDL_FreeSurface(surface5);
     SDL_FreeSurface(surface6);
+    SDL_FreeSurface(surface7);
 
     me->RectNormal.x = 0;
     me->RectNormal.y = 0;
@@ -123,6 +128,11 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->RectShootingDown.w = 128;
     me->RectShootingDown.h = 64;
 
+    me->RectShootingUp.x = 0;
+    me->RectShootingUp.y = 0;
+    me->RectShootingUp.w = 128;
+    me->RectShootingUp.h = 64;
+
 
 
     me->playerShootRectWin.w = PLAYER_WIDTH;
@@ -135,6 +145,8 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     SDL_QueryTexture(me->shootingTex, NULL, NULL, &me->RectShooting.w, &me->RectShooting.h);
     SDL_QueryTexture(me->walkingDownTex, NULL, NULL, &me->RectWalkingDown.w, &me->RectWalkingDown.h);
     SDL_QueryTexture(me->shootDownTex, NULL, NULL, &me->RectShootingDown.w, &me->RectShootingDown.w);
+    SDL_QueryTexture(me->shootUpTex, NULL, NULL, &me->RectShootingUp.w, &me->RectShootingUp.w);
+
 
     for(int i = 0; i < 10; i++)
     {
@@ -146,6 +158,7 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->RectWalkingUp.w /= PLAYERWALKINGFRAMES;
     me->RectShooting.w /= 2;
     me->RectShootingDown.w  = 64;
+    me->RectShootingUp.w = 64;
     me->RectWalkingDown.w /= PLAYERWALKINGFRAMES;
  
 
@@ -182,6 +195,9 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             int shootFrame = (ticks) % 2;
             me->RectShooting.x = shootFrame * me->RectShooting.w;
             me->RectShootingDown.x = shootFrame * me->RectShootingDown.w;
+            me->RectShootingUp.x = shootFrame * me->RectShootingUp.w;
+
+
             //ticks *= 3;
             //shootFrame = (ticks) % 10;
             if(lastFrame != shootFrame)
@@ -277,6 +293,11 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
 
             SDL_RenderCopy(rend, me->shootDownTex, &(me->RectShootingDown), &(me->windowRect));
         }
+        else if(currentlyShooting && currentlyUp)
+        {
+
+            SDL_RenderCopy(rend, me->shootUpTex, &(me->RectShootingUp), &(me->windowRect));
+        }
         else if(currentlyShooting && !lastRight)
         {
                                 // printf("%f ", angle);
@@ -354,8 +375,8 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             //printf("drawing %d bullets\n", bulletsOnScreen);
             if(bulletsDirection[i] == LEFT && bulletsShowing[i]) SDL_RenderCopy(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]));
             else if(bulletsDirection[i] == RIGHT && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),0.0, NULL, SDL_FLIP_HORIZONTAL);
-            else if(bulletsDirection[i] == UP && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),270.0, NULL, SDL_FLIP_NONE);
-            else if(bulletsDirection[i] == DOWN && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),90.0, NULL, SDL_FLIP_NONE);
+            else if(bulletsDirection[i] == UP && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),90.0, NULL, SDL_FLIP_NONE);
+            else if(bulletsDirection[i] == DOWN && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),270.0, NULL, SDL_FLIP_NONE);
         }
     
 }
@@ -370,6 +391,7 @@ void player_Free(player * me)
     SDL_DestroyTexture(me->bulletTex);
     SDL_DestroyTexture(me->walkingDownTex);
     SDL_DestroyTexture(me->shootDownTex);
+    SDL_DestroyTexture(me->shootUpTex);
 
 }
 
@@ -386,11 +408,11 @@ int getBulletOffSetX(player * me, int direction)
     }
     else if(direction == UP)
     {
-        return me->windowRect.x + (me->windowRect.w / 2);
+        return me->windowRect.x + (me->windowRect.w / 2) - 5;
     }
     else if(direction == DOWN)
     {
-        return me->windowRect.x + (me->windowRect.w / 2);
+        return me->windowRect.x + (me->windowRect.w / 2) - 3;
     }
 
 }

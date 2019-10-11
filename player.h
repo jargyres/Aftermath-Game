@@ -18,6 +18,7 @@ typedef struct {
     SDL_Rect RectWalkingUp;
     SDL_Rect RectWalkingDown;
     SDL_Rect RectShootingDown;
+    SDL_Rect RectShootingUp;
     SDL_Rect bulletRect1;
     SDL_Rect bulletRect2;
     SDL_Rect bulletRect3;
@@ -35,12 +36,13 @@ typedef struct {
     SDL_Texture* shootingTex;
     SDL_Texture* walkingDownTex;
     SDL_Texture* shootDownTex;
+    SDL_Texture* shootUpTex;
     
     
 
 } player;
 
-void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, int screenWidth, int screenHeight, SDL_Renderer *rend);
+void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, int screenWidth, int screenHeight, SDL_Renderer *rend);
 
 void player_Move(player * me, int dx, int dy);
 

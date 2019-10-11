@@ -8,7 +8,7 @@
 #define LEVEL_HEIGHT 30000
 #define PLAYER_WIDTH 128
 #define PLAYER_HEIGHT 128
-#define PLAYER_VELOCITY 4000
+#define PLAYER_VELOCITY 3000
 
 // int bgpositionx = 0;
 // int bgpositiony = 0;
@@ -17,7 +17,7 @@ int startposY = (LEVEL_HEIGHT / 2);
 int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
 void getOffset(background * me, int i, int j);
 
-void background_Constructor(background * me, char* backgroundImagePath, SDL_Renderer *rend)
+void background_Constructor(background * me, char* backgroundImagePath,char* minimapImagePath, char* minimapArrowImagePath, SDL_Renderer *rend)
 {
     //    SDL_Rect bg10, bg11, bg12, bg13, bg14, bg15, bg16, bg17, bg18, bg19, bg11_0, bg11_1, bg11_2, bg11_3, bg11_4;
     //    SDL_Rect bg110, bg111, bg112, bg113, bg114, bg115, bg116, bg117, bg118, bg119, bg1110, bg1111, gb1112, bg1113, bg1114;
@@ -35,18 +35,28 @@ void background_Constructor(background * me, char* backgroundImagePath, SDL_Rend
     me->backgroundArr[7][0] = &(me->bg70); me->backgroundArr[7][1] = &(me->bg71); me->backgroundArr[7][2] = &(me->bg72); me->backgroundArr[7][3] = &(me->bg73); me->backgroundArr[7][4] = &(me->bg74); me->backgroundArr[7][5] = &(me->bg75); me->backgroundArr[7][6] = &(me->bg76); me->backgroundArr[7][7] = &(me->bg77); me->backgroundArr[7][8] = &(me->bg78); me->backgroundArr[7][9] = &(me->bg79); me->backgroundArr[7][10] = &(me->bg710); me->backgroundArr[7][11] = &(me->bg711); me->backgroundArr[7][12] = &(me->bg712); me->backgroundArr[7][13] = &(me->bg713); me->backgroundArr[7][14] = &(me->bg714);
     me->backgroundArr[8][0] = &(me->bg80); me->backgroundArr[8][1] = &(me->bg81); me->backgroundArr[8][2] = &(me->bg82); me->backgroundArr[8][3] = &(me->bg83); me->backgroundArr[8][4] = &(me->bg84); me->backgroundArr[8][5] = &(me->bg85); me->backgroundArr[8][6] = &(me->bg86); me->backgroundArr[8][7] = &(me->bg87); me->backgroundArr[8][8] = &(me->bg88); me->backgroundArr[8][9] = &(me->bg89); me->backgroundArr[8][10] = &(me->bg810); me->backgroundArr[8][11] = &(me->bg811); me->backgroundArr[8][12] = &(me->bg812); me->backgroundArr[8][13] = &(me->bg813); me->backgroundArr[8][14] = &(me->bg814);
     me->backgroundArr[9][0] = &(me->bg90); me->backgroundArr[9][1] = &(me->bg91); me->backgroundArr[9][2] = &(me->bg92); me->backgroundArr[9][3] = &(me->bg93); me->backgroundArr[9][4] = &(me->bg94); me->backgroundArr[9][5] = &(me->bg95); me->backgroundArr[9][6] = &(me->bg96); me->backgroundArr[9][7] = &(me->bg97); me->backgroundArr[9][8] = &(me->bg98); me->backgroundArr[9][9] = &(me->bg99); me->backgroundArr[9][10] = &(me->bg910); me->backgroundArr[9][11] = &(me->bg911); me->backgroundArr[9][12] = &(me->bg912); me->backgroundArr[9][13] = &(me->bg913); me->backgroundArr[9][14] = &(me->bg914);
-    me->backgroundArr[10][0] = &(me->bg100); me->backgroundArr[10][1] = &(me->bg101); me->backgroundArr[10][2] = &(me->bg102); me->backgroundArr[10][3] = &(me->bg103); me->backgroundArr[10][4] = &(me->bg104); me->backgroundArr[10][5] = &(me->bg105); me->backgroundArr[10][6] = &(me->bg106); me->backgroundArr[10][7] = &(me->bg107); me->backgroundArr[10][8] = &(me->bg108); me->backgroundArr[10][9] = &(me->bg109); me->backgroundArr[10][10] = &(me->bg1010); me->backgroundArr[10][11] = &(me->bg1011); me->backgroundArr[10][12] = &(me->bg1010); me->backgroundArr[10][13] = &(me->bg1013); me->backgroundArr[10][14] = &(me->bg1014);
-    me->backgroundArr[11][0] = &(me->bg110); me->backgroundArr[11][1] = &(me->bg111); me->backgroundArr[11][2] = &(me->bg112); me->backgroundArr[11][3] = &(me->bg113); me->backgroundArr[11][4] = &(me->bg114); me->backgroundArr[11][5] = &(me->bg115); me->backgroundArr[11][6] = &(me->bg116); me->backgroundArr[11][7] = &(me->bg117); me->backgroundArr[11][8] = &(me->bg118); me->backgroundArr[11][9] = &(me->bg119); me->backgroundArr[11][10] = &(me->bg1110); me->backgroundArr[11][11] = &(me->bg1111); me->backgroundArr[11][12] = &(me->bg1110); me->backgroundArr[11][13] = &(me->bg1113); me->backgroundArr[11][14] = &(me->bg1114);
-    me->backgroundArr[12][0] = &(me->bg120); me->backgroundArr[12][1] = &(me->bg121); me->backgroundArr[12][2] = &(me->bg122); me->backgroundArr[12][3] = &(me->bg123); me->backgroundArr[12][4] = &(me->bg124); me->backgroundArr[12][5] = &(me->bg125); me->backgroundArr[12][6] = &(me->bg126); me->backgroundArr[12][7] = &(me->bg127); me->backgroundArr[12][8] = &(me->bg128); me->backgroundArr[12][9] = &(me->bg129); me->backgroundArr[12][10] = &(me->bg1210); me->backgroundArr[12][11] = &(me->bg1211); me->backgroundArr[12][12] = &(me->bg1211); me->backgroundArr[12][13] = &(me->bg1213); me->backgroundArr[12][14] = &(me->bg1214);
+    me->backgroundArr[10][0] = &(me->bg100); me->backgroundArr[10][1] = &(me->bg101); me->backgroundArr[10][2] = &(me->bg102); me->backgroundArr[10][3] = &(me->bg103); me->backgroundArr[10][4] = &(me->bg104); me->backgroundArr[10][5] = &(me->bg105); me->backgroundArr[10][6] = &(me->bg106); me->backgroundArr[10][7] = &(me->bg107); me->backgroundArr[10][8] = &(me->bg108); me->backgroundArr[10][9] = &(me->bg109); me->backgroundArr[10][10] = &(me->bg1010); me->backgroundArr[10][11] = &(me->bg1011); me->backgroundArr[10][12] = &(me->gb1012); me->backgroundArr[10][13] = &(me->bg1013); me->backgroundArr[10][14] = &(me->bg1014);
+    me->backgroundArr[11][0] = &(me->bg110); me->backgroundArr[11][1] = &(me->bg111); me->backgroundArr[11][2] = &(me->bg112); me->backgroundArr[11][3] = &(me->bg113); me->backgroundArr[11][4] = &(me->bg114); me->backgroundArr[11][5] = &(me->bg115); me->backgroundArr[11][6] = &(me->bg116); me->backgroundArr[11][7] = &(me->bg117); me->backgroundArr[11][8] = &(me->bg118); me->backgroundArr[11][9] = &(me->bg119); me->backgroundArr[11][10] = &(me->bg1110); me->backgroundArr[11][11] = &(me->bg1111); me->backgroundArr[11][12] = &(me->gb1112); me->backgroundArr[11][13] = &(me->bg1113); me->backgroundArr[11][14] = &(me->bg1114);
+    me->backgroundArr[12][0] = &(me->bg120); me->backgroundArr[12][1] = &(me->bg121); me->backgroundArr[12][2] = &(me->bg122); me->backgroundArr[12][3] = &(me->bg123); me->backgroundArr[12][4] = &(me->bg124); me->backgroundArr[12][5] = &(me->bg125); me->backgroundArr[12][6] = &(me->bg126); me->backgroundArr[12][7] = &(me->bg127); me->backgroundArr[12][8] = &(me->bg128); me->backgroundArr[12][9] = &(me->bg129); me->backgroundArr[12][10] = &(me->bg1210); me->backgroundArr[12][11] = &(me->bg1211); me->backgroundArr[12][12] = &(me->gb1212); me->backgroundArr[12][13] = &(me->bg1213); me->backgroundArr[12][14] = &(me->bg1214);
     me->backgroundArr[13][0] = &(me->bg130); me->backgroundArr[13][1] = &(me->bg131); me->backgroundArr[13][2] = &(me->bg132); me->backgroundArr[13][3] = &(me->bg133); me->backgroundArr[13][4] = &(me->bg134); me->backgroundArr[13][5] = &(me->bg135); me->backgroundArr[13][6] = &(me->bg136); me->backgroundArr[13][7] = &(me->bg137); me->backgroundArr[13][8] = &(me->bg138); me->backgroundArr[13][9] = &(me->bg139); me->backgroundArr[13][10] = &(me->bg1310); me->backgroundArr[13][11] = &(me->bg1311); me->backgroundArr[13][12] = &(me->gb1312); me->backgroundArr[13][13] = &(me->bg1313); me->backgroundArr[13][14] = &(me->bg1314);
     me->backgroundArr[14][0] = &(me->bg140); me->backgroundArr[14][1] = &(me->bg141); me->backgroundArr[14][2] = &(me->bg142); me->backgroundArr[14][3] = &(me->bg143); me->backgroundArr[14][4] = &(me->bg144); me->backgroundArr[14][5] = &(me->bg145); me->backgroundArr[14][6] = &(me->b146); me->backgroundArr[14][7] = &(me->bg147); me->backgroundArr[14][8] = &(me->bg148); me->backgroundArr[14][9] = &(me->b149); me->backgroundArr[14][10] = &(me->bg1410); me->backgroundArr[14][11] = &(me->bg1411); me->backgroundArr[14][12] = &(me->gb1412); me->backgroundArr[14][13] = &(me->bg1413); me->backgroundArr[14][14] = &(me->bg1414);
 
     
     SDL_Surface* surface = IMG_Load(backgroundImagePath);
 
+    SDL_Surface* surface2 = IMG_Load(minimapArrowImagePath);
+
+    SDL_Surface* surface3 = IMG_Load(minimapImagePath);
+
     me->backgroundTexture = SDL_CreateTextureFromSurface(rend, surface);
 
+    me->minimapArrowTex = SDL_CreateTextureFromSurface(rend, surface2);
+
+    me->minimapTex = SDL_CreateTextureFromSurface(rend, surface3);
+
     SDL_FreeSurface(surface);
+    SDL_FreeSurface(surface2);
+    SDL_FreeSurface(surface3);
 
 
     for(int i = 0; i < 15; i++)
@@ -68,6 +78,18 @@ void background_Constructor(background * me, char* backgroundImagePath, SDL_Rend
         }
     }
 
+    me->minimapRect.x = 0;
+    me->minimapRect.y = 0;
+    me->minimapRect.w = 300;
+    me->minimapRect.h = 300;
+
+    me->minimapArrowRect.x = startposX / 100;
+    me->minimapArrowRect.y = startposY / 100;
+    me->minimapArrowRect.w = 7;
+    me->minimapArrowRect.h = 7;
+
+    SDL_QueryTexture(me->minimapTex, NULL, NULL, &me->minimapRect.w, &me->minimapRect.h);
+    SDL_QueryTexture(me->minimapArrowTex, NULL, NULL, &me->minimapArrowRect.w, &me->minimapArrowRect.h);
 
 }
 
@@ -112,6 +134,9 @@ void background_Move(background * me, int currentlyWalking, int right, int left,
                     me->playerposx = startposX - backgroundOffsetX + (SCREENWIDTH / 2);
                     me->playerposy = startposY - backgroundOffsetY + (SCREENHEIGHT / 2);
 
+                    me->minimapArrowRect.x = me->playerposx / 100;
+                    me->minimapArrowRect.y = me->playerposy / 100;
+
 
                 
                     for(int i = 0; i < 15; i++)
@@ -138,7 +163,7 @@ void background_Move(background * me, int currentlyWalking, int right, int left,
 
 }
 
-void background_Draw(background * me, SDL_Renderer *rend)
+void background_Draw(background * me, int minimapShowing, int lastRight, int lastDown, int currentlyUp, SDL_Renderer *rend)
 {
     for(int i = 0; i < 15; i++)
     {
@@ -148,11 +173,24 @@ void background_Draw(background * me, SDL_Renderer *rend)
         }
     }
 
+    if(minimapShowing)
+    {
+        SDL_RenderCopy(rend, me->minimapTex, NULL, &(me->minimapRect));
+
+        if(lastDown) SDL_RenderCopyEx(rend, me->minimapArrowTex, NULL, &(me->minimapArrowRect), 0.0, NULL, SDL_FLIP_VERTICAL);
+        else if(lastRight) SDL_RenderCopyEx(rend, me->minimapArrowTex, NULL, &(me->minimapArrowRect), 90.0, NULL, SDL_FLIP_NONE);
+        else if(currentlyUp) SDL_RenderCopy(rend, me->minimapArrowTex, NULL, &(me->minimapArrowRect));
+        else if(!lastRight) SDL_RenderCopyEx(rend, me->minimapArrowTex, NULL, &(me->minimapArrowRect), 270.0, NULL, SDL_FLIP_NONE);
+
+    }
+
 }
 
 void background_Free(background * me)
 {
     SDL_DestroyTexture(me->backgroundTexture);
+    SDL_DestroyTexture(me->minimapArrowTex);
+    SDL_DestroyTexture(me->minimapTex);
 }
 
 

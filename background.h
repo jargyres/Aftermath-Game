@@ -9,6 +9,8 @@
 typedef struct {
 
     SDL_Texture* backgroundTexture;
+    SDL_Texture* minimapArrowTex;
+    SDL_Texture* minimapTex;
 
     int playerposx;
     int playerposy;
@@ -35,18 +37,23 @@ typedef struct {
     
     SDL_Rect *backgroundArr[15][15];
 
+    SDL_Rect minimapRect;
+
+    SDL_Rect minimapArrowRect;
+
+
 
 
 } background;
 
-void background_Constructor(background * me, char* backgroundImagePath, SDL_Renderer *rend);
+void background_Constructor(background * me, char* backgroundImagePath, char* minimapImagePath, char* minimapArrowImagePath, SDL_Renderer *rend);
 
 void background_SetPlayerPos(background * me, int playerPosX, int playerPosY);
 
 void background_Move(background * me, int currentlyWalking, 
-                    int right, int left, int up, int down, 
+                    int right, int left, int up, int down,
                     int SCREENWIDTH, int SCREENHEIGHT);
-void background_Draw(background * me, SDL_Renderer *rend);
+void background_Draw(background * me, int minimapShowing, int lastRight, int lastDown, int currentlyUp, SDL_Renderer *rend);
 
 void background_Free(background * me);
 
