@@ -52,7 +52,7 @@ int main() {
     SCREENWIDTH = dm.w - (dm.w / 4);
     SCREENHEIGHT = dm.h - (dm.h / 5);
 
-    printf("Screenwidth = %d, screenheight = %d", SCREENWIDTH, SCREENHEIGHT);
+    //printf("Screenwidth = %d, screenheight = %d", SCREENWIDTH, SCREENHEIGHT);
 
     SDL_Window *win = SDL_CreateWindow("Game",
                                        SDL_WINDOWPOS_CENTERED,
@@ -76,7 +76,10 @@ int main() {
     background bg;
 
     player_Constructor(&p, "images/player.png", "images/playerBack.png", 
-                    "images/playerShoot.png",SCREENWIDTH, SCREENHEIGHT, rend);
+                    "images/playerShoot.png", "images/bullet.png", 
+                    "images/playerWalkDown.png","images/playerShootDown.png",
+                    SCREENWIDTH, SCREENHEIGHT, 
+                    rend);
 
     background_Constructor(&bg, "images/background.png", rend);
 
@@ -213,6 +216,8 @@ int main() {
     int currentlyUp = 0;
     //also same thing here
     int currentlyShooting = 0;
+    
+    int lastDown = 0;
 
     
 
@@ -236,7 +241,7 @@ int main() {
         int mouse_y;
         int frame = 0;
         int keepPlayingTitleMusic = 1;
-        Mix_PlayMusic(titleMusic, -1);
+        //Mix_PlayMusic(titleMusic, -1);
         while(!quit && !play)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -334,23 +339,29 @@ int main() {
                             case SDL_SCANCODE_W:
                             case SDL_SCANCODE_UP:
                                 currentlyUp = 1;
+                                lastDown = 0;
+                                lastRight = 0;
                                 up = 1;
                                 break;
                             case SDL_SCANCODE_A:
                             case SDL_SCANCODE_LEFT:
                                 currentlyUp = 0;
                                 lastRight = 0;
+                                lastDown = 0;
                                 left = 1;
                                 break;
                             case SDL_SCANCODE_S:
                             case SDL_SCANCODE_DOWN:
                                 currentlyUp = 0;
+                                lastDown = 1;
+                                lastRight = 0;
                                 down = 1;
                                 break;
                             case SDL_SCANCODE_D:
                             case SDL_SCANCODE_RIGHT:
                                 currentlyUp = 0;
                                 lastRight = 1;
+                                lastDown = 0;
                                 right = 1;
                                 break;
                             case SDL_SCANCODE_SPACE:
@@ -365,18 +376,26 @@ int main() {
                             case SDL_SCANCODE_W:
                             case SDL_SCANCODE_UP:
                                 up = 0;
+                                lastDown = 0;
+                                lastRight = 0;
                                 break;
                             case SDL_SCANCODE_A:
                             case SDL_SCANCODE_LEFT:
                                 left = 0;
+                                lastRight = 0;
+                                lastDown = 0;
                                 break;
                             case SDL_SCANCODE_S:
                             case SDL_SCANCODE_DOWN:
                                 down = 0;
+                                lastDown = 1;
+                                lastRight = 0;
                                 break;
                             case SDL_SCANCODE_D:
                             case SDL_SCANCODE_RIGHT:
                                 right = 0;
+                                lastRight = 1;
+                                lastDown = 0;
                                 break;
                             case SDL_SCANCODE_SPACE:
                                 currentlyShooting = 0;
@@ -416,7 +435,7 @@ int main() {
 
             background_Draw(&bg, rend);
 
-            player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp,
+            player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp, lastDown, up, down, left, right,
                             angle, rend);
 
 
@@ -446,6 +465,7 @@ int main() {
     Mix_FreeMusic(titleMusic);
     Mix_CloseAudio();
     SDL_Quit();
+    printf("exited successfully\n");
     return 0;
 }
 
