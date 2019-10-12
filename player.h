@@ -9,9 +9,11 @@ typedef struct {
     int posY;
     int screenwidth;
     int screenheight;
+    int bulletsLeft;
     SDL_Rect windowRect;
     SDL_Rect windowRect2;
-    SDL_Rect windowRect3;
+    SDL_Rect numberWindowRect;
+    SDL_Rect numberWindowRect2;
     SDL_Rect playerShootRectWin;
     SDL_Rect RectNormal;
     SDL_Rect RectShooting;
@@ -30,6 +32,10 @@ typedef struct {
     SDL_Rect bulletRect9;
     SDL_Rect bulletRect10;
     SDL_Rect *bulletArray[10];
+    SDL_Rect numberRect;
+    SDL_Rect numberRect2;
+    SDL_Rect ammoRect;
+    SDL_Rect ammoWordRect;
     SDL_Texture* bulletTex;
     SDL_Texture* normalWalkingTex;
     SDL_Texture* upWalkingTex;
@@ -37,12 +43,19 @@ typedef struct {
     SDL_Texture* walkingDownTex;
     SDL_Texture* shootDownTex;
     SDL_Texture* shootUpTex;
+    SDL_Texture* numberTex;
+    SDL_Texture* ammoTex;
+    SDL_Texture* ammoWordTex;
     
     
 
 } player;
 
-void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, int screenWidth, int screenHeight, SDL_Renderer *rend);
+void player_Constructor(player * me, 
+                char* normalImagePath, char* upImagePath, char* shootingImagePath, 
+                char* bulletImagePath, char* downImagePath, char* downShootImagePath, 
+                char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, int screenWidth, int screenHeight, 
+                SDL_Renderer *rend);
 
 void player_Move(player * me, int dx, int dy);
 

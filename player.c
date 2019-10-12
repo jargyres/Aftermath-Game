@@ -18,8 +18,8 @@ int bulletsShowing[10] = {0,0,0,0,0,0,0,0,0,0};
 int bulletsDirection[10] = {RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT};
 int getBulletOffSetX(player * me, int direction);
 int getBulletOffsetY(player * me, int direction);
-
-void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
+int setNumbers(player * me, int numb);
+void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
 
     //window rect that will hold both the rect for the basic left and
     //right walking as well as the shooting rects
@@ -37,10 +37,8 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->windowRect2.x = me->windowRect.x;
     me->windowRect2.y = me->windowRect.y;
 
-    me->windowRect3.w = me->windowRect.w;
-    me->windowRect3.h = me->windowRect.h;
-    me->windowRect3.x = me->windowRect.x;
-    me->windowRect3.y = me->windowRect.y;
+    //for the tens place of numbers
+
 
     me->bulletArray[0] = &(me->bulletRect1);
     me->bulletArray[1] = &(me->bulletRect2);
@@ -71,6 +69,9 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->walkingDownTex = NULL;
     me->shootDownTex = NULL;
     me->shootUpTex == NULL;
+    me->numberTex = NULL;
+    me->ammoTex = NULL;
+    me->ammoWordTex = NULL;
     
     SDL_Surface* surface = IMG_Load(normalImagePath);
     SDL_Surface* surface2 = IMG_Load(upImagePath);
@@ -79,6 +80,10 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     SDL_Surface* surface5 = IMG_Load(downImagePath);
     SDL_Surface* surface6 = IMG_Load(downShootImagePath);
     SDL_Surface* surface7 = IMG_Load(upShootImagePath);
+    SDL_Surface* surface8 = IMG_Load(numberPath);
+    SDL_Surface* surface9 = IMG_Load(ammoImagePath);
+    SDL_Surface* surface10 = IMG_Load(ammoWordPath);
+
 
     me->normalWalkingTex = SDL_CreateTextureFromSurface(rend, surface);
 
@@ -94,6 +99,13 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
 
     me->shootUpTex = SDL_CreateTextureFromSurface(rend, surface7);
 
+    me->numberTex = SDL_CreateTextureFromSurface(rend, surface8);
+
+    me->ammoTex = SDL_CreateTextureFromSurface(rend, surface9);
+
+    me->ammoWordTex = SDL_CreateTextureFromSurface(rend, surface10);
+
+
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface2);
     SDL_FreeSurface(surface3);
@@ -101,6 +113,10 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     SDL_FreeSurface(surface5);
     SDL_FreeSurface(surface6);
     SDL_FreeSurface(surface7);
+    SDL_FreeSurface(surface8);
+    SDL_FreeSurface(surface9);
+    SDL_FreeSurface(surface10);
+
 
     me->RectNormal.x = 0;
     me->RectNormal.y = 0;
@@ -140,12 +156,49 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->playerShootRectWin.x = (SCREENWIDTH - me->playerShootRectWin.w) /2;
     me->playerShootRectWin.y = (SCREENHEIGHT - me->playerShootRectWin.h) /2;
 
+    //for the tens place
+    me->numberRect.w = 200;
+    me->numberRect.h = 15;
+    me->numberRect.x = 0;
+    me->numberRect.y = 0;
+    //for the ones place
+    me->numberRect2.w = 200;
+    me->numberRect2.h = 15;
+    me->numberRect2.x = 0;
+    me->numberRect2.y = 0;
+
+    me->ammoRect.w = 15;
+    me->ammoRect.h = 15;
+    me->ammoRect.x = 15;
+    me->ammoRect.y = SCREENHEIGHT - 70;
+
+    me->ammoWordRect.w = 15;
+    me->ammoWordRect.h = 15;
+    me->ammoWordRect.x = 15;
+    me->ammoWordRect.y = SCREENHEIGHT - 75;
+
+    
+    me->numberWindowRect.w = 20;
+    me->numberWindowRect.h = 15;
+    me->numberWindowRect.x = me->ammoRect.x + 30;
+    me->numberWindowRect.y = me->ammoRect.y + 40;
+    //for the ones place of numbers
+    me->numberWindowRect2.w = 20;
+    me->numberWindowRect2.h = 15;
+    me->numberWindowRect2.x = me->numberWindowRect.x + 15;
+    me->numberWindowRect2.y = me->numberWindowRect.y;
+
     SDL_QueryTexture(me->normalWalkingTex, NULL, NULL, &me->RectNormal.w, &me->RectNormal.h);
     SDL_QueryTexture(me->upWalkingTex, NULL, NULL, &me->RectWalkingUp.w, &me->RectWalkingUp.h);
     SDL_QueryTexture(me->shootingTex, NULL, NULL, &me->RectShooting.w, &me->RectShooting.h);
     SDL_QueryTexture(me->walkingDownTex, NULL, NULL, &me->RectWalkingDown.w, &me->RectWalkingDown.h);
     SDL_QueryTexture(me->shootDownTex, NULL, NULL, &me->RectShootingDown.w, &me->RectShootingDown.w);
     SDL_QueryTexture(me->shootUpTex, NULL, NULL, &me->RectShootingUp.w, &me->RectShootingUp.w);
+    SDL_QueryTexture(me->numberTex, NULL, NULL, &me->numberRect.w, &me->numberRect.h);
+    SDL_QueryTexture(me->numberTex, NULL, NULL, &me->numberRect2.w, &me->numberRect2.h);
+    SDL_QueryTexture(me->ammoTex, NULL, NULL, &me->ammoRect.w, &me->ammoRect.h);
+    SDL_QueryTexture(me->ammoWordTex, NULL, NULL, &me->ammoWordRect.w, &me->ammoWordRect.h);
+
 
 
     for(int i = 0; i < 10; i++)
@@ -160,6 +213,14 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->RectShootingDown.w  = 64;
     me->RectShootingUp.w = 64;
     me->RectWalkingDown.w /= PLAYERWALKINGFRAMES;
+    me->numberRect.w = 20;
+    me->numberRect2.w = 20;
+    me->ammoRect.w *= 5;
+    me->ammoRect.h *= 5;
+
+    me->bulletsLeft = 99;
+
+    setNumbers(me, me->bulletsLeft);
  
 
 
@@ -172,6 +233,7 @@ void player_Move(player * me, int dx, int dy)
 
 }
 
+int num = 99;
 void player_Animate(player * me, int currentlyShooting, int currentlyWalking, int lastRight, int currentlyUp, int lastDown, int up, int down, int left, int right, int mouseAngle, SDL_Renderer *rend)
 {
 
@@ -197,9 +259,6 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             me->RectShootingDown.x = shootFrame * me->RectShootingDown.w;
             me->RectShootingUp.x = shootFrame * me->RectShootingUp.w;
 
-
-            //ticks *= 3;
-            //shootFrame = (ticks) % 10;
             if(lastFrame != shootFrame)
             {
                 switchedShootFrame = 1;
@@ -211,9 +270,8 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             }
             
             
-            if(switchedShootFrame && shootFrame == 0)
+            if(switchedShootFrame && shootFrame == 0 && me->bulletsLeft > 0)
             {
-                // printf("gunup shootframe = %d\n", shootFrame);
                 if(bulletsOnScreen < 10)
                 {                
                     
@@ -243,6 +301,14 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
                     
 
                 }
+                // setNumbers(me, num);
+                
+                me->bulletsLeft -= 1;
+                if(me->bulletsLeft <= 0) me->bulletsLeft = 0;
+                setNumbers(me, me->bulletsLeft);
+                // printf("%d\n", num);
+
+
             }
 
         }
@@ -378,6 +444,11 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             else if(bulletsDirection[i] == UP && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),90.0, NULL, SDL_FLIP_NONE);
             else if(bulletsDirection[i] == DOWN && bulletsShowing[i]) SDL_RenderCopyEx(rend, me->bulletTex,NULL, &(*(me->bulletArray)[i]),270.0, NULL, SDL_FLIP_NONE);
         }
+
+        SDL_RenderCopy(rend, me->ammoWordTex, NULL, &(me->ammoWordRect));
+        SDL_RenderCopy(rend, me->ammoTex, NULL, &(me->ammoRect));
+        SDL_RenderCopy(rend, me->numberTex, &(me->numberRect), &(me->numberWindowRect));
+        SDL_RenderCopy(rend, me->numberTex, &(me->numberRect2), &(me->numberWindowRect2));
     
 }
 
@@ -392,6 +463,9 @@ void player_Free(player * me)
     SDL_DestroyTexture(me->walkingDownTex);
     SDL_DestroyTexture(me->shootDownTex);
     SDL_DestroyTexture(me->shootUpTex);
+    SDL_DestroyTexture(me->numberTex);
+    SDL_DestroyTexture(me->ammoTex);
+    SDL_DestroyTexture(me-> ammoWordTex);
 
 }
 
@@ -439,5 +513,16 @@ int getBulletOffsetY(player * me, int direction)
 
 
 }
+
+int setNumbers(player * me, int numb)
+{
+    int ones = (numb % 10);
+    int tens = (numb / 10) % 10;
+
+    me->numberRect.x = tens * me->numberRect.w;
+    me->numberRect2.x = ones * me->numberRect2.w;
+
+}
+
 
 

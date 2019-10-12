@@ -78,7 +78,7 @@ int main() {
 
     player_Constructor(&p, "images/player.png", "images/playerBack.png", 
                     "images/playerShoot.png", "images/bullet.png", 
-                    "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png",
+                    "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
                     SCREENWIDTH, SCREENHEIGHT, 
                     rend);
 
