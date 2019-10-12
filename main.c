@@ -26,6 +26,7 @@
 // ive been compiling with
 //"gcc main.c player.c background.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lm -o main"
 // and then I run with "./main"
+// or just gcc main.c player.c background.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lm -o main; ./main
 int SCREENHEIGHT;
 int SCREENWIDTH;
 int bgPositionx = 0;
@@ -81,7 +82,7 @@ int main() {
                     SCREENWIDTH, SCREENHEIGHT, 
                     rend);
 
-    background_Constructor(&bg, "images/background.png", "images/minimap.png","images/minimapArrow.png", rend);
+    background_Constructor(&bg, "images/background.png", "images/minimap.png","images/minimapArrow.png","images/inventory.png", SCREENWIDTH, SCREENHEIGHT, rend);
 
     
 
@@ -95,6 +96,8 @@ int main() {
     SDL_Texture* playOffTex = NULL;
     SDL_Texture* ExitOffTex = NULL;
     SDL_Texture* bulletTex = NULL;
+    SDL_Texture* controlsTex = NULL;
+    SDL_Texture* controlsTexBG = NULL;
 
 
     //load the image into memory using SDL_Image library functions
@@ -108,6 +111,8 @@ int main() {
     SDL_Surface* exitOnSurface = IMG_Load("images/ExitOn.png");
     SDL_Surface* playOffSurface = IMG_Load("images/PlayOff.png");
     SDL_Surface* exitOffSurface = IMG_Load("images/ExitOff.png");
+    SDL_Surface* controlsSurface = IMG_Load("images/controls.png");
+    SDL_Surface* controlsBGSurface = IMG_Load("images/controlsBg.png");
 
     // Make the textures using the renderer and the surfaces we made from the images
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
@@ -119,6 +124,8 @@ int main() {
     ExitOnTex = SDL_CreateTextureFromSurface(rend, exitOnSurface);
     playOffTex = SDL_CreateTextureFromSurface(rend, playOffSurface);
     ExitOffTex = SDL_CreateTextureFromSurface(rend, exitOffSurface);
+    controlsTex = SDL_CreateTextureFromSurface(rend, controlsSurface);
+    controlsTexBG = SDL_CreateTextureFromSurface(rend, controlsBGSurface);
 
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
@@ -129,6 +136,8 @@ int main() {
     SDL_FreeSurface(exitOnSurface);
     SDL_FreeSurface(playOffSurface);
     SDL_FreeSurface(exitOffSurface);
+    SDL_FreeSurface(controlsSurface);
+    SDL_FreeSurface(controlsBGSurface);
 
 
     //load our music
@@ -161,6 +170,27 @@ int main() {
 
     SDL_Rect playOffRect;
     SDL_Rect ExitOffRect;
+
+    SDL_Rect controlRect;
+    SDL_Rect controlsBGRect;
+    controlRect.w = 1000;
+    controlRect.h = 1000;
+    controlRect.x = (SCREENWIDTH/2) - (controlRect.w/2);
+    controlRect.y = (SCREENHEIGHT/2) - (controlRect.h/2) + 30;
+
+
+
+
+    controlsBGRect.x = 0;
+    controlsBGRect.y = 0;
+    controlsBGRect.w = 1;
+    controlsBGRect.h = 1;
+
+    SDL_QueryTexture(controlsTex, NULL, NULL, &controlRect.w, &controlRect.h);
+    SDL_QueryTexture(controlsTexBG, NULL, NULL, &controlsBGRect.w, &controlsBGRect.h);
+
+    controlsBGRect.w *= SCREENWIDTH;
+    controlsBGRect.h *= SCREENHEIGHT;
 
 
 
@@ -231,6 +261,8 @@ int main() {
     int playerPosX = startPosX;
     int playerPosY = startPosX;
     int miniMapShowing = 0;
+    int inventoryShowing = 0;
+    int controlsShowing = 0;
     background_SetPlayerPos(&bg, playerPosX, playerPosY);
     double angle = 0.0;
     
@@ -277,11 +309,28 @@ int main() {
                     case SDL_MOUSEBUTTONUP:
                         if(playHoveredOver) play = 1;
                         if(quitHoveredOver) quit = 1;
+                        break;
+                    case SDL_KEYDOWN:
+                        switch (event.key.keysym.scancode)
+                        {
+                            case SDL_SCANCODE_TAB:
+                                if(controlsShowing) controlsShowing = 0;
+                                else controlsShowing = 1;
+                                break;
+                            case SDL_SCANCODE_ESCAPE:
+                                quit = 1;
+                                break;
+                        }
+                        break;
+
                 }
             }
 
             // SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
             SDL_RenderClear(rend);
+            SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+
+            if(!controlsShowing){
             SDL_RenderCopy(rend, titleBack1Tex, NULL, &titleBack1Rect);
             SDL_RenderCopy(rend, titleBack2Tex, NULL, &titleBack2Rect);
             SDL_RenderCopy(rend, titleBack3Tex, NULL, &titleBack3Rect);
@@ -311,6 +360,14 @@ int main() {
             titleBack3Rect.x -= 3;
             //printf("%d\n", titleBack3Rect.x);
             if(titleBack3Rect.x < -1600) titleBack3Rect.x = 0;
+            }
+            else
+            {
+                SDL_RenderCopy(rend, controlsTexBG, NULL, &controlsBGRect);
+                SDL_RenderCopy(rend, controlsTex, NULL, &controlRect);
+
+            }
+            
 
             SDL_RenderPresent(rend);
             Uint64 end = SDL_GetPerformanceCounter();
@@ -371,6 +428,15 @@ int main() {
                             case SDL_SCANCODE_E:
                                 if(miniMapShowing) miniMapShowing = 0;
                                 else if(!miniMapShowing) miniMapShowing = 1;
+                                inventoryShowing = 0;
+                                break;
+                            case SDL_SCANCODE_R:
+                                if(inventoryShowing) inventoryShowing = 0;
+                                else if(!inventoryShowing) inventoryShowing = 1;
+                                miniMapShowing = 0;
+                                break;
+                            case SDL_SCANCODE_ESCAPE:
+                                quit = 1;
                                 break;
                         }
                         break;
@@ -439,7 +505,7 @@ int main() {
             //clear the renderer so we dont just get garbage on our screen
             SDL_RenderClear(rend);
 
-            background_Draw(&bg, miniMapShowing, lastRight, lastDown, currentlyUp,rend);
+            background_Draw(&bg, miniMapShowing, inventoryShowing,lastRight, lastDown, currentlyUp,rend);
 
             player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp, lastDown, up, down, left, right,
                             angle, rend);
@@ -466,6 +532,8 @@ int main() {
     SDL_DestroyTexture(titleBack1Tex);
     SDL_DestroyTexture(playOnTex);
     SDL_DestroyTexture(ExitOnTex);
+    SDL_DestroyTexture(controlsTex);
+    SDL_DestroyTexture(controlsTexBG);
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
     Mix_FreeMusic(titleMusic);

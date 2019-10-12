@@ -17,13 +17,16 @@ int startposY = (LEVEL_HEIGHT / 2);
 int validMoveMent(int playerPosX, int playerPosY, int right, int left, int up, int down);
 void getOffset(background * me, int i, int j);
 
-void background_Constructor(background * me, char* backgroundImagePath,char* minimapImagePath, char* minimapArrowImagePath, SDL_Renderer *rend)
+void background_Constructor(background * me, char* backgroundImagePath,char* minimapImagePath, char* minimapArrowImagePath, char* inventoryImagePath, int ScreenWidth, int ScreenHeight, SDL_Renderer *rend)
 {
     //    SDL_Rect bg10, bg11, bg12, bg13, bg14, bg15, bg16, bg17, bg18, bg19, bg11_0, bg11_1, bg11_2, bg11_3, bg11_4;
     //    SDL_Rect bg110, bg111, bg112, bg113, bg114, bg115, bg116, bg117, bg118, bg119, bg1110, bg1111, gb1112, bg1113, bg1114;
 
     me->bgPosX = 0;
     me->bgPosY = 0;
+
+    me->ScreenWidth = ScreenWidth;
+    me->ScreenHeight = ScreenHeight;
 
     me->backgroundArr[0][0] = &(me->b00); me->backgroundArr[0][1] = &(me->b01); me->backgroundArr[0][2] = &(me->b02); me->backgroundArr[0][3] = &(me->b03); me->backgroundArr[0][4] = &(me->b04); me->backgroundArr[0][5] = &(me->b05); me->backgroundArr[0][6] = &(me->b06); me->backgroundArr[0][7] = &(me->b07); me->backgroundArr[0][8] = &(me->b08); me->backgroundArr[0][9] = &(me->b09); me->backgroundArr[0][10] = &(me->b010); me->backgroundArr[0][11] = &(me->b011); me->backgroundArr[0][12] = &(me->b012); me->backgroundArr[0][13] = &(me->b013); me->backgroundArr[0][14] = &(me->b014);
     me->backgroundArr[1][0] = &(me->bg10); me->backgroundArr[1][1] = &(me->bg11); me->backgroundArr[1][2] = &(me->bg12); me->backgroundArr[1][3] = &(me->bg13); me->backgroundArr[1][4] = &(me->bg14); me->backgroundArr[1][5] = &(me->bg15); me->backgroundArr[1][6] = &(me->bg16); me->backgroundArr[1][7] = &(me->bg17); me->backgroundArr[1][8] = &(me->bg18); me->backgroundArr[1][9] = &(me->bg19); me->backgroundArr[1][10] = &(me->bg11_0); me->backgroundArr[1][11] = &(me->bg11_1); me->backgroundArr[1][12] = &(me->bg11_2); me->backgroundArr[1][13] = &(me->bg11_3); me->backgroundArr[1][14] = &(me->bg11_4);
@@ -48,15 +51,20 @@ void background_Constructor(background * me, char* backgroundImagePath,char* min
 
     SDL_Surface* surface3 = IMG_Load(minimapImagePath);
 
+    SDL_Surface* surface4 = IMG_Load(inventoryImagePath);
+
     me->backgroundTexture = SDL_CreateTextureFromSurface(rend, surface);
 
     me->minimapArrowTex = SDL_CreateTextureFromSurface(rend, surface2);
 
     me->minimapTex = SDL_CreateTextureFromSurface(rend, surface3);
 
+    me->inventoryTex = SDL_CreateTextureFromSurface(rend, surface4);
+
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface2);
     SDL_FreeSurface(surface3);
+    SDL_FreeSurface(surface4);
 
 
     for(int i = 0; i < 15; i++)
@@ -88,8 +96,15 @@ void background_Constructor(background * me, char* backgroundImagePath,char* min
     me->minimapArrowRect.w = 7;
     me->minimapArrowRect.h = 7;
 
+    me->inventoryRect.x = (me->ScreenWidth) - 300;
+    me->inventoryRect.y = 0;
+    me->inventoryRect.w = 300;
+    me->inventoryRect.h = 300;
+
     SDL_QueryTexture(me->minimapTex, NULL, NULL, &me->minimapRect.w, &me->minimapRect.h);
     SDL_QueryTexture(me->minimapArrowTex, NULL, NULL, &me->minimapArrowRect.w, &me->minimapArrowRect.h);
+    SDL_QueryTexture(me->inventoryTex, NULL, NULL, &me->inventoryRect.w, &me->inventoryRect.h);
+   
 
 }
 
@@ -163,7 +178,7 @@ void background_Move(background * me, int currentlyWalking, int right, int left,
 
 }
 
-void background_Draw(background * me, int minimapShowing, int lastRight, int lastDown, int currentlyUp, SDL_Renderer *rend)
+void background_Draw(background * me, int minimapShowing, int inventoryShowing, int lastRight, int lastDown, int currentlyUp, SDL_Renderer *rend)
 {
     for(int i = 0; i < 15; i++)
     {
@@ -183,6 +198,10 @@ void background_Draw(background * me, int minimapShowing, int lastRight, int las
         else if(!lastRight) SDL_RenderCopyEx(rend, me->minimapArrowTex, NULL, &(me->minimapArrowRect), 270.0, NULL, SDL_FLIP_NONE);
 
     }
+    else if(inventoryShowing)
+    {
+        SDL_RenderCopy(rend, me->inventoryTex, NULL, &(me->inventoryRect));
+    }
 
 }
 
@@ -191,6 +210,7 @@ void background_Free(background * me)
     SDL_DestroyTexture(me->backgroundTexture);
     SDL_DestroyTexture(me->minimapArrowTex);
     SDL_DestroyTexture(me->minimapTex);
+    SDL_DestroyTexture(me->inventoryTex);
 }
 
 
