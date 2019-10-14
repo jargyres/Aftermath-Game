@@ -319,15 +319,21 @@ int main() {
                         switch (event.key.keysym.scancode)
                         {
                             case SDL_SCANCODE_TAB:
-                                if(controlsShowing) controlsShowing = 0;
-                                else controlsShowing = 1;
+                                controlsShowing = 1;
                                 break;
                             case SDL_SCANCODE_ESCAPE:
                                 quit = 1;
                                 break;
                         }
                         break;
-
+                    case SDL_KEYUP:
+                        switch (event.key.keysym.scancode)
+                        {
+                            case SDL_SCANCODE_TAB:
+                                controlsShowing = 0;
+                                break;
+                        }
+                        break;
                 }
             }
 
