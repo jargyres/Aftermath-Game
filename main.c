@@ -81,6 +81,11 @@ int main() {
                     "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
                     SCREENWIDTH, SCREENHEIGHT, 
                     rend);
+    // player_Constructor(&p, "images/enemyWalk.png", "images/enemyWalkUp.png", 
+    //                 "images/enemyShoot.png", "images/bullet.png", 
+    //                 "images/enemyWalkDown.png","images/enemyShootDown.png", "images/enemyShootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
+    //                 SCREENWIDTH, SCREENHEIGHT, 
+    //                 rend);
 
     background_Constructor(&bg, "images/background.png", "images/minimap.png","images/minimapArrow.png","images/inventory.png", SCREENWIDTH, SCREENHEIGHT, rend);
 
