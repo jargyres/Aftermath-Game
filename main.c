@@ -371,7 +371,7 @@ int main() {
                             quitHoveredOver = 0;
                         }
                         // x:(610, 850) y:(594, 655)
-                        else if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 564 && mouse_y >= 500
+                        else if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 564 && mouse_y >= 500)
                         {
                             quitHoveredOver = 1;
                             playHoveredOver = 0;
