@@ -8,7 +8,7 @@
 #define LEVEL_HEIGHT 30000
 #define PLAYER_WIDTH 128
 #define PLAYER_HEIGHT 128
-#define PLAYER_VELOCITY 3000
+#define PLAYER_VELOCITY 300
 
 // int bgpositionx = 0;
 // int bgpositiony = 0;
