@@ -89,6 +89,7 @@ int main() {
 
     //Initialize some textures to nothing for now
     SDL_Texture* castusSprite = NULL;
+    SDL_Texture* aftermathTex = NULL;
     SDL_Texture* titleBack1Tex = NULL;
     SDL_Texture* titleBack2Tex = NULL;
     SDL_Texture* titleBack3Tex = NULL;
@@ -108,6 +109,7 @@ int main() {
 
     SDL_Surface* bulletSurface = IMG_Load("images/bullet.png");
     SDL_Surface* cactusSurface = IMG_Load("images/cactus.png");
+    SDL_Surface* aftermathSurface = IMG_Load("images/aftermath.png");
     SDL_Surface* titleBackSurface1 = IMG_Load("images/TitleFarBack.png");
     SDL_Surface* titleBackSurface2 = IMG_Load("images/TitleMidBack.png");
     SDL_Surface* titleBackSurface3 = IMG_Load("images/TitleCloseBack.png");
@@ -121,6 +123,7 @@ int main() {
     // Make the textures using the renderer and the surfaces we made from the images
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
     castusSprite = SDL_CreateTextureFromSurface(rend, cactusSurface);
+    aftermathTex = SDL_CreateTextureFromSurface(rend, aftermathSurface);
     titleBack1Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface1);
     titleBack2Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface2);
     titleBack3Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface3);
@@ -136,6 +139,7 @@ int main() {
 
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
+    SDL_FreeSurface(aftermathSurface);
     SDL_FreeSurface(titleBackSurface1);
     SDL_FreeSurface(titleBackSurface2);
     SDL_FreeSurface(titleBackSurface3);
@@ -203,6 +207,12 @@ int main() {
     titleBack3RectCopy.h = 1000;
     titleBack3RectCopy.x = 1000;
     titleBack3RectCopy.y = 0;
+
+    SDL_Rect aftermathRect;
+    aftermathRect.w = 1000;
+    aftermathRect.h = 1000;
+    aftermathRect.x = 0;
+    aftermathRect.y = 0;
 
     SDL_Rect playOnRect;
     playOnRect.w = 1000;
@@ -285,7 +295,11 @@ int main() {
     ExitOffRect.h = 40 * 4;
     ExitOffRect.x = (WINDOW_WIDTH / 2) - 140;
     ExitOffRect.y = (WINDOW_HEIGHT / 2) + 60;
-
+    SDL_QueryTexture(aftermathTex, NULL, NULL, &aftermathRect.w, &aftermathRect.h);
+    aftermathRect.w = 200 * 4;
+    aftermathRect.h = 60 * 4;
+    aftermathRect.x = (WINDOW_WIDTH / 2) - 420;
+    aftermathRect.y = (WINDOW_HEIGHT / 2) - 400;
 
 
     //just values 0 or 1 telling us which direction were going
@@ -399,6 +413,7 @@ int main() {
                 //SDL_RenderCopy(rend, titleBack3TexCopy, NULL, &titleBack3RectCopy);
                 SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
                 SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
+                SDL_RenderCopy(rend, aftermathTex, NULL, &aftermathRect);
 
                 if(play) titleScreen = 0;
 
