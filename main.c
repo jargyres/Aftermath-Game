@@ -116,7 +116,7 @@ int main() {
     SDL_Surface* exitOnSurface = IMG_Load("images/ExitOn.png");
     SDL_Surface* playOffSurface = IMG_Load("images/PlayOff.png");
     SDL_Surface* exitOffSurface = IMG_Load("images/ExitOff.png");
-    SDL_Surface* controlsSurface = IMG_Load("images/controls.png");
+    SDL_Surface* controlsSurface = IMG_Load("images/newControls.png");
     SDL_Surface* controlsBGSurface = IMG_Load("images/controlsBg.png");
 
     // Make the textures using the renderer and the surfaces we made from the images
@@ -160,6 +160,16 @@ int main() {
     titleBack1Rect.h = 1000;
     titleBack1Rect.x = 0;
     titleBack1Rect.y = 0;
+
+    titleBack2Rect.w = 1000;
+    titleBack2Rect.h = 1000;
+    titleBack2Rect.x = 0;
+    titleBack2Rect.y = 0;
+
+    titleBack3Rect.w = 1000;
+    titleBack3Rect.h = 1000;
+    titleBack3Rect.x = 0;
+    titleBack3Rect.y = 0;
 
     SDL_Rect playOnRect;
     playOnRect.w = 1000;
@@ -319,21 +329,15 @@ int main() {
                         switch (event.key.keysym.scancode)
                         {
                             case SDL_SCANCODE_TAB:
-                                controlsShowing = 1;
+                                if(controlsShowing) controlsShowing = 0;
+                                else controlsShowing = 1;
                                 break;
                             case SDL_SCANCODE_ESCAPE:
                                 quit = 1;
                                 break;
                         }
                         break;
-                    case SDL_KEYUP:
-                        switch (event.key.keysym.scancode)
-                        {
-                            case SDL_SCANCODE_TAB:
-                                controlsShowing = 0;
-                                break;
-                        }
-                        break;
+                    
                 }
             }
 

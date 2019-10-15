@@ -204,6 +204,9 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     for(int i = 0; i < 10; i++)
     {
         SDL_QueryTexture(me->bulletTex, NULL, NULL, &(*(me->bulletArray)[i]).w,  &(*(me->bulletArray)[i]).h);
+        (*(me->bulletArray))[i].w *= 2;
+        (*(me->bulletArray))[i].h *= 2;
+
     }
     
 
@@ -217,6 +220,7 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->numberRect2.w = 20;
     me->ammoRect.w *= 5;
     me->ammoRect.h *= 5;
+    
 
     me->bulletsLeft = 99;
 
