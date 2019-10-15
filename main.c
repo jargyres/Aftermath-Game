@@ -444,6 +444,7 @@ int main() {
         int mouse_x;
         int mouse_y;
         Mix_PlayMusic(gameMusic, -1);
+        int texalpha = 255;
         while(!quit)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -574,6 +575,10 @@ int main() {
             player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp, lastDown, up, down, left, right,
                             angle, rend);
 
+            SDL_SetTextureAlphaMod(controlsTexBG, texalpha);
+            //SDL_RenderCopy(rend, controlsTexBG, NULL, &controlsBGRect);
+            if(texalpha > 0) texalpha--; 
+            printf("%d\n",texalpha);
 
             // finally push the renderer to the hardware, making the sprites appear on the screen
             SDL_RenderPresent(rend);
@@ -583,6 +588,8 @@ int main() {
             Uint64 end = SDL_GetPerformanceCounter();
             float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
             SDL_Delay(floor(16.666f - elapsedMS));
+
+            
 
         }
     }
