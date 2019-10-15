@@ -259,7 +259,7 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
         if(currentlyWalking){
             int frames = PLAYERWALKINGFRAMES;
 
-            int delayPerFrame = 200;
+            int delayPerFrame = 220;
 
             int frame = (SDL_GetTicks() / delayPerFrame) % frames;
 
