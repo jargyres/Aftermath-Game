@@ -253,7 +253,7 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
         }
         else if(currentlyShooting)
         {
-            int ticks = SDL_GetTicks() / 50;
+            int ticks = SDL_GetTicks() / 120;
             int shootFrame = (ticks) % 2;
             me->RectShooting.x = shootFrame * me->RectShooting.w;
             me->RectShootingDown.x = shootFrame * me->RectShootingDown.w;
