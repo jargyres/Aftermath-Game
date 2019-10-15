@@ -600,7 +600,6 @@ int main() {
             SDL_SetTextureAlphaMod(blackPixelTex, texalpha/2);
             SDL_SetTextureBlendMode(blackPixelTex, SDL_BLENDMODE_BLEND);
             SDL_RenderCopy(rend, blackPixelTex, NULL, &controlsBGRect);
-            if(texalpha = 500) SDL_Delay(100);
             if(texalpha > 0) texalpha--; 
 
             // finally push the renderer to the hardware, making the sprites appear on the screen
@@ -623,7 +622,11 @@ int main() {
     SDL_DestroyTexture(bulletTex);
     SDL_DestroyTexture(castusSprite);
     SDL_DestroyTexture(titleBack1Tex);
+    SDL_DestroyTexture(titleBack2Tex);
+    SDL_DestroyTexture(titleBack3Tex);
     SDL_DestroyTexture(playOnTex);
+    SDL_DestroyTexture(ExitOffTex);
+    SDL_DestroyTexture(playOffTex);
     SDL_DestroyTexture(ExitOnTex);
     SDL_DestroyTexture(controlsTex);
     SDL_DestroyTexture(controlsTexBG);
