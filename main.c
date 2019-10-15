@@ -363,6 +363,7 @@ int main() {
                         break;
                     case SDL_MOUSEMOTION:
                         SDL_GetMouseState(&mouse_x, &mouse_y);
+                        // printf("mousex = %d mouse y = %d", mouse_x, mouse_y);
                         // printf("Mouse x = %d mouse y = %d", mouse_x, mouse_y);
                         if(mouse_x >= ((2 * SCREENWIDTH) / 5 ) && mouse_x <= ((13 * SCREENWIDTH) / 25) && mouse_y <= (SCREENHEIGHT - (2 * SCREENHEIGHT / 5))  && mouse_y >= ((13 * SCREENHEIGHT) / 25))
                         {
