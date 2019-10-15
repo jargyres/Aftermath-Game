@@ -340,7 +340,7 @@ int main() {
     int controlsShowing = 0;
     background_SetPlayerPos(&bg, playerPosX, playerPosY);
     double angle = 0.0;
-    
+    int titleStop = 0;
     if(titleScreen && !play)
     {
         int playHoveredOver = 0;
@@ -372,7 +372,7 @@ int main() {
                             quitHoveredOver = 0;
                         }
                         // x:(610, 850) y:(594, 655)
-                        else if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 564 && mouse_y >= 500)
+                        else if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 655 && mouse_y >= 568)
                         {
                             quitHoveredOver = 1;
                             playHoveredOver = 0;
@@ -438,15 +438,20 @@ int main() {
                     }
                 }
 
-                titleBack1Rect.x -= 1;
-                titleBack2Rect.x -= 2;
-                titleBack3Rect.x -= 3;
+                //titleBack1Rect.x -= 1;
+                //titleBack2Rect.x -= 2;
+                //titleBack3Rect.x -= 3;
                 titleBack1RectCopy.x -= 1;
                 titleBack2RectCopy.x -= 2;
                 titleBack3RectCopy.x -= 8;
                 //printf("%d\n", titleBack3Rect.x);
-                if(titleBack3Rect.x < -2700) titleBack3Rect.x = 0;
-            }
+                if(titleBack3Rect.x > -1100){
+                    titleBack3Rect.x -= 3;
+                    titleBack2Rect.x -= 2;
+                    titleBack1Rect.x -= 1;
+                }
+
+            } 
             else
             {
                 SDL_RenderCopy(rend, controlsTexBG, NULL, &controlsBGRect);
