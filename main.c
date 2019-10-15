@@ -596,7 +596,7 @@ int main() {
             SDL_SetTextureAlphaMod(controlsTexBG, texalpha);
             //SDL_RenderCopy(rend, controlsTexBG, NULL, &controlsBGRect);
             if(texalpha > 0) texalpha--; 
-            printf("%d\n",texalpha);
+            //printf("%d\n",texalpha);
 
             // finally push the renderer to the hardware, making the sprites appear on the screen
             SDL_RenderPresent(rend);
