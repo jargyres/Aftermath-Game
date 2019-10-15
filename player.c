@@ -1,6 +1,7 @@
 #include "player.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #define PLAYERWALKINGFRAMES 3
 #define PLAYER_WIDTH 128
@@ -19,7 +20,14 @@ int bulletsDirection[10] = {RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIG
 int getBulletOffSetX(player * me, int direction);
 int getBulletOffsetY(player * me, int direction);
 int setNumbers(player * me, int numb);
-void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
+void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, char* playerWalkSound, char* playerShootSound,  int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
+
+    me->gunshot = NULL;
+    me->ricePunch = NULL;
+    me->gunshot = Mix_LoadWAV("music/BANGPOWBAP.wav");
+    if(me->gunshot == NULL) printf("couldnt find gunshot\n");
+    me->ricePunch = Mix_LoadWAV(playerWalkSound);
+    if(me->ricePunch == NULL) printf("couldnt find ricepunch\n");
 
     //window rect that will hold both the rect for the basic left and
     //right walking as well as the shooting rects
@@ -225,7 +233,7 @@ void player_Constructor(player * me, char* normalImagePath, char* upImagePath, c
     me->bulletsLeft = 99;
 
     setNumbers(me, me->bulletsLeft);
- 
+ me->channel = 0;
 
 
 }
@@ -238,9 +246,11 @@ void player_Move(player * me, int dx, int dy)
 }
 
 int num = 99;
+int playingWalking = 0;
 void player_Animate(player * me, int currentlyShooting, int currentlyWalking, int lastRight, int currentlyUp, int lastDown, int up, int down, int left, int right, int mouseAngle, SDL_Renderer *rend)
 {
 
+        
 
         if(currentlyWalking){
             int frames = PLAYERWALKINGFRAMES;
@@ -253,11 +263,26 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             me->RectWalkingUp.x = frame * me->RectWalkingUp.w;
             me->RectWalkingDown.x = frame * me->RectWalkingDown.w;
 
+            if(frame == 0) me->channel = Mix_PlayChannel(-1, (me->gunshot), 0);
+            /*int soundframes = 3;
+
+            int sounddelayPerFrame = 200;
+
+            int soundframe = (SDL_GetTicks() / delayPerFrame) % soundframes;
+
+            if(soundframe == 0)
+            {*/
+            // if(me->channel != 0) playingWalking = 1;
+            // else playingWalking = 0;
+            //if(me->channel == 0) me->channel = Mix_PlayChannel(0, (me->gunshot), 0);
+
+            // }
+
 
         }
         else if(currentlyShooting)
         {
-            int ticks = SDL_GetTicks() / 120;
+            int ticks = SDL_GetTicks() / 160;
             int shootFrame = (ticks) % 2;
             me->RectShooting.x = shootFrame * me->RectShooting.w;
             me->RectShootingDown.x = shootFrame * me->RectShootingDown.w;
@@ -302,7 +327,7 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
                         (*(me->bulletArray)[bulletsOnScreen]).y = getBulletOffsetY(me, LEFT);                        
                     }
                     
-                    
+                    me->channel = Mix_PlayChannel(-1, (me->gunshot), 0);
 
                 }
                 // setNumbers(me, num);
@@ -470,6 +495,8 @@ void player_Free(player * me)
     SDL_DestroyTexture(me->numberTex);
     SDL_DestroyTexture(me->ammoTex);
     SDL_DestroyTexture(me-> ammoWordTex);
+    Mix_FreeChunk(me->gunshot);
+    Mix_FreeChunk(me->ricePunch);
 
 }
 

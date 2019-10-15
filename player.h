@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
 
 typedef struct {
 
@@ -46,6 +48,11 @@ typedef struct {
     SDL_Texture* numberTex;
     SDL_Texture* ammoTex;
     SDL_Texture* ammoWordTex;
+    Mix_Chunk *gunshot;
+    // gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
+    Mix_Chunk *ricePunch;
+    // ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
+    int channel;
     
     
 
@@ -54,7 +61,7 @@ typedef struct {
 void player_Constructor(player * me, 
                 char* normalImagePath, char* upImagePath, char* shootingImagePath, 
                 char* bulletImagePath, char* downImagePath, char* downShootImagePath, 
-                char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, int screenWidth, int screenHeight, 
+                char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, char* playerWalkSound, char* playerShootSound, int screenWidth, int screenHeight, 
                 SDL_Renderer *rend);
 
 void player_Move(player * me, int dx, int dy);

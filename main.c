@@ -76,11 +76,7 @@ int main() {
     player p;
     background bg;
 
-    player_Constructor(&p, "images/player.png", "images/playerBack.png", 
-                    "images/playerShoot.png", "images/bullet.png", 
-                    "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
-                    SCREENWIDTH, SCREENHEIGHT, 
-                    rend);
+
     // player_Constructor(&p, "images/enemyWalk.png", "images/enemyWalkUp.png", 
     //                 "images/enemyShoot.png", "images/bullet.png", 
     //                 "images/enemyWalkDown.png","images/enemyShootDown.png", "images/enemyShootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
@@ -151,11 +147,18 @@ int main() {
     titleMusic = Mix_LoadMUS("music/game_music.mp3");
     Mix_Music *gameMusic = NULL;
     gameMusic = Mix_LoadMUS("music/GAME_STROLL_MP3.mp3");
-    Mix_Music *gunshot = NULL;
-    gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
-    Mix_Music *ricePunch = NULL;
-    ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
-    
+    // Mix_Chunk *gunshot = NULL;
+    // gunshot = Mix_LoadWAV("music/BANGPOWBAP.wav");
+    // if(gunshot == NULL) printf("couldnt find gunshot in main\n");
+
+    // Mix_Music *ricePunch = NULL;
+    // ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
+    player_Constructor(&p, "images/player.png", "images/playerBack.png", 
+                    "images/playerShoot.png", "images/bullet.png", 
+                    "images/playerWalkDown.png","images/playerShootDown.png", "images/playerShoootUp.png", "images/numbers.png", "images/ammo.png", "images/Ammo.png",
+                    "music/RICE_PUNCH.wav", "music/BANGPOWBAP.wav",
+                    SCREENWIDTH, SCREENHEIGHT, 
+                    rend);
 
     //this is the rectangle that will actually show the images
 
