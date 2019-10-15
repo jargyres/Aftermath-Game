@@ -96,6 +96,9 @@ int main() {
     SDL_Texture* titleBack1Tex = NULL;
     SDL_Texture* titleBack2Tex = NULL;
     SDL_Texture* titleBack3Tex = NULL;
+    //SDL_Texture* titleBack1TexCopy = NULL;
+    //SDL_Texture* titleBack2TexCopy = NULL;
+    //SDL_Texture* titleBack3TexCopy = NULL;
     SDL_Texture* playOnTex = NULL;
     SDL_Texture* ExitOnTex = NULL;
     SDL_Texture* playOffTex = NULL;
@@ -125,6 +128,9 @@ int main() {
     titleBack1Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface1);
     titleBack2Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface2);
     titleBack3Tex = SDL_CreateTextureFromSurface(rend, titleBackSurface3);
+    //titleBack1TexCopy = SDL_CreateTextureFromSurface(rend, titleBackSurface1);
+    //titleBack2TexCopy = SDL_CreateTextureFromSurface(rend, titleBackSurface2);
+    //titleBack3TexCopy = SDL_CreateTextureFromSurface(rend, titleBackSurface3);
     playOnTex = SDL_CreateTextureFromSurface(rend, playOnSurface);
     ExitOnTex = SDL_CreateTextureFromSurface(rend, exitOnSurface);
     playOffTex = SDL_CreateTextureFromSurface(rend, playOffSurface);
@@ -151,10 +157,10 @@ int main() {
     titleMusic = Mix_LoadMUS("music/game_music.mp3");
     Mix_Music *gameMusic = NULL;
     gameMusic = Mix_LoadMUS("music/GAME_STROLL_MP3.mp3");
-    Mix_Music *gunshot = NULL;
-    gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
-    Mix_Music *ricePunch = NULL;
-    ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
+    // Mix_Music *gunshot = NULL;
+    // gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
+    // Mix_Music *ricePunch = NULL;
+    // ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
     
 
     //this is the rectangle that will actually show the images
@@ -176,6 +182,24 @@ int main() {
     titleBack3Rect.h = 1000;
     titleBack3Rect.x = 0;
     titleBack3Rect.y = 0;
+
+    SDL_Rect titleBack2RectCopy;
+    SDL_Rect titleBack3RectCopy;
+    SDL_Rect titleBack1RectCopy;
+    titleBack1RectCopy.w = 1000;
+    titleBack1RectCopy.h = 1000;
+    titleBack1RectCopy.x = 0;
+    titleBack1RectCopy.y = 0;
+
+    titleBack2RectCopy.w = 1000;
+    titleBack2RectCopy.h = 1000;
+    titleBack2RectCopy.x = 0;
+    titleBack2RectCopy.y = 0;
+
+    titleBack3RectCopy.w = 1000;
+    titleBack3RectCopy.h = 1000;
+    titleBack3RectCopy.x = 1000;
+    titleBack3RectCopy.y = 0;
 
     SDL_Rect playOnRect;
     playOnRect.w = 1000;
@@ -227,6 +251,17 @@ int main() {
     SDL_QueryTexture(titleBack3Tex, NULL, NULL, &titleBack3Rect.w, &titleBack3Rect.h);
     titleBack3Rect.w = SCREENHEIGHT * 2.96;
     titleBack3Rect.h = SCREENHEIGHT;
+
+    //SDL_QueryTexture(titleBack1TexCopy, NULL, NULL, &titleBack1RectCopy.w, &titleBack1RectCopy.h);
+    titleBack1RectCopy.w = SCREENHEIGHT * 2.96;
+    titleBack1RectCopy.h = SCREENHEIGHT;
+    //SDL_QueryTexture(titleBack2TexCopy, NULL, NULL, &titleBack2RectCopy.w, &titleBack2RectCopy.h);
+    titleBack2RectCopy.w = SCREENHEIGHT * 2.96;
+    titleBack2RectCopy.h = SCREENHEIGHT;
+    //SDL_QueryTexture(titleBack3TexCopy, NULL, NULL, &titleBack3RectCopy.w, &titleBack3RectCopy.h);
+    titleBack3RectCopy.w = SCREENHEIGHT * 2.96;
+    titleBack3RectCopy.h = SCREENHEIGHT;
+    
     SDL_QueryTexture(playOnTex, NULL, NULL, &playOnRect.w, &playOnRect.h);
     playOnRect.w = 60 * 4;
     playOnRect.h = 40 * 4;
@@ -351,36 +386,43 @@ int main() {
             SDL_RenderClear(rend);
             SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
 
-            if(!controlsShowing){
-            SDL_RenderCopy(rend, titleBack1Tex, NULL, &titleBack1Rect);
-            SDL_RenderCopy(rend, titleBack2Tex, NULL, &titleBack2Rect);
-            SDL_RenderCopy(rend, titleBack3Tex, NULL, &titleBack3Rect);
-            SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
-            SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
-
-            if(play) titleScreen = 0;
-
-            if(playHoveredOver || quitHoveredOver)
+            if(!controlsShowing)
             {
-                int delayPerFrame = 300;
-                frame = (SDL_GetTicks() / delayPerFrame) % 2;
-                if(playHoveredOver && frame == 1)
-                {
-                    SDL_RenderCopy(rend, playOnTex, NULL, &playOnRect);
-                    SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
-                }
-                else if(quitHoveredOver && frame == 1)
-                {
-                    SDL_RenderCopy(rend, ExitOnTex, NULL, &ExitOnRect);
-                    SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
-                }
-            }
+                SDL_RenderCopy(rend, titleBack1Tex, NULL, &titleBack1Rect);
+                SDL_RenderCopy(rend, titleBack2Tex, NULL, &titleBack2Rect);
+                SDL_RenderCopy(rend, titleBack3Tex, NULL, &titleBack3Rect);
+                //SDL_RenderCopy(rend, titleBack1TexCopy, NULL, &titleBack1RectCopy);
+                //SDL_RenderCopy(rend, titleBack2TexCopy, NULL, &titleBack2RectCopy);
+                //SDL_RenderCopy(rend, titleBack3TexCopy, NULL, &titleBack3RectCopy);
+                SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
+                SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
 
-            titleBack1Rect.x -= 1;
-            titleBack2Rect.x -= 2;
-            titleBack3Rect.x -= 3;
-            //printf("%d\n", titleBack3Rect.x);
-            if(titleBack3Rect.x < -1600) titleBack3Rect.x = 0;
+                if(play) titleScreen = 0;
+
+                if(playHoveredOver || quitHoveredOver)
+                {
+                    int delayPerFrame = 300;
+                    frame = (SDL_GetTicks() / delayPerFrame) % 2;
+                    if(playHoveredOver && frame == 1)
+                    {
+                        SDL_RenderCopy(rend, playOnTex, NULL, &playOnRect);
+                        SDL_RenderCopy(rend, ExitOffTex, NULL, &ExitOffRect);
+                    }
+                     else if(quitHoveredOver && frame == 1)
+                    {
+                        SDL_RenderCopy(rend, ExitOnTex, NULL, &ExitOnRect);
+                        SDL_RenderCopy(rend, playOffTex, NULL, &playOffRect);
+                    }
+                }
+
+                titleBack1Rect.x -= 1;
+                titleBack2Rect.x -= 2;
+                titleBack3Rect.x -= 3;
+                titleBack1RectCopy.x -= 1;
+                titleBack2RectCopy.x -= 2;
+                titleBack3RectCopy.x -= 8;
+                //printf("%d\n", titleBack3Rect.x);
+                if(titleBack3Rect.x < -2700) titleBack3Rect.x = 0;
             }
             else
             {
