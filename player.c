@@ -22,8 +22,12 @@ int getBulletOffsetY(player * me, int direction);
 int setNumbers(player * me, int numb);
 void player_Constructor(player * me, char* normalImagePath, char* upImagePath, char* shootingImagePath, char* bulletImagePath, char* downImagePath, char* downShootImagePath, char* upShootImagePath, char* numberPath, char* ammoImagePath, char * ammoWordPath, char* playerWalkSound, char* playerShootSound,  int SCREENWIDTH, int SCREENHEIGHT, SDL_Renderer *rend){
 
-    // me->gunshot = NULL;
-    // me->ricePunch = NULL;
+    me->gunshot = NULL;
+    me->ricePunch = NULL;
+
+    me->gunshot = Mix_LoadWAV(playerShootSound);
+
+    me->ricePunch = Mix_LoadWAV(playerWalkSound);
     // // me->gunshot = Mix_LoadWAV("music/BANGPOWBAP.wav");
     // if(me->gunshot == NULL) printf("couldnt find gunshot\n");
     // me->ricePunch = Mix_LoadWAV(playerWalkSound);
@@ -263,7 +267,12 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
             me->RectWalkingUp.x = frame * me->RectWalkingUp.w;
             me->RectWalkingDown.x = frame * me->RectWalkingDown.w;
 
-            // if(frame == 0) me->channel = Mix_PlayChannel(-1, (me->gunshot), 0);
+            // Mix_HaltMusic();
+            // Mix_PlayMusic(me->ricePunch, 0);
+
+
+
+            if(frame == 0) me->channel = Mix_PlayChannel(1, (me->ricePunch), 0);
             /*int soundframes = 3;
 
             int sounddelayPerFrame = 200;
@@ -282,7 +291,7 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
         }
         else if(currentlyShooting)
         {
-            int ticks = SDL_GetTicks() / 160;
+            int ticks = SDL_GetTicks() / 200;
             int shootFrame = (ticks) % 2;
             me->RectShooting.x = shootFrame * me->RectShooting.w;
             me->RectShootingDown.x = shootFrame * me->RectShootingDown.w;
@@ -327,7 +336,9 @@ void player_Animate(player * me, int currentlyShooting, int currentlyWalking, in
                         (*(me->bulletArray)[bulletsOnScreen]).y = getBulletOffsetY(me, LEFT);                        
                     }
                     
-                    // me->channel = Mix_PlayChannel(-1, (me->gunshot), 0);
+                    me->channel = Mix_PlayChannel(-1, (me->gunshot), 0);
+                    // Mix_HaltMusic();
+                    // Mix_PlayMusic(me->gunshot, 0);
 
                 }
                 // setNumbers(me, num);
@@ -495,6 +506,8 @@ void player_Free(player * me)
     SDL_DestroyTexture(me->numberTex);
     SDL_DestroyTexture(me->ammoTex);
     SDL_DestroyTexture(me-> ammoWordTex);
+    Mix_FreeChunk(me->gunshot);
+    Mix_FreeChunk(me->ricePunch);
     // Mix_FreeChunk(me->gunshot);
     // Mix_FreeChunk(me->ricePunch);
 
