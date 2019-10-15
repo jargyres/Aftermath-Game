@@ -594,7 +594,6 @@ int main() {
         }
     }
 
-
     //clean up our resources before we exit
     player_Free(&p);
     background_Free(&bg);
@@ -608,6 +607,7 @@ int main() {
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
     Mix_FreeMusic(titleMusic);
+    Mix_FreeMusic(gameMusic);
     Mix_CloseAudio();
     SDL_Quit();
     printf("exited successfully\n");
