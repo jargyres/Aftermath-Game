@@ -365,12 +365,14 @@ int main() {
                         SDL_GetMouseState(&mouse_x, &mouse_y);
                         // printf("mousex = %d mouse y = %d", mouse_x, mouse_y);
                         // printf("Mouse x = %d mouse y = %d", mouse_x, mouse_y);
-                        if(mouse_x >= ((2 * SCREENWIDTH) / 5 ) && mouse_x <= ((13 * SCREENWIDTH) / 25) && mouse_y <= (SCREENHEIGHT - (2 * SCREENHEIGHT / 5))  && mouse_y >= ((13 * SCREENHEIGHT) / 25))
+                        // x:(610, 850) y:(500, 564)
+                        if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 564  && mouse_y >= 500)
                         {
                             playHoveredOver = 1;
                             quitHoveredOver = 0;
                         }
-                        else if(mouse_x >= ((2 * SCREENWIDTH) / 5 ) && mouse_x <= ((13 * SCREENWIDTH) / 25) && mouse_y <= ((69 * SCREENHEIGHT) / 100) && mouse_y >= ((63 * SCREENHEIGHT) / 100))
+                        // x:(610, 850) y:(594, 655)
+                        else if(mouse_x >= 610 && mouse_x <= 850 && mouse_y <= 564 && mouse_y >= 500)
                         {
                             quitHoveredOver = 1;
                             playHoveredOver = 0;
