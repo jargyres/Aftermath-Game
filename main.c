@@ -149,6 +149,12 @@ int main() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_Music *titleMusic = NULL;
     titleMusic = Mix_LoadMUS("music/game_music.mp3");
+    Mix_Music *gameMusic = NULL;
+    gameMusic = Mix_LoadMUS("music/GAME_STROLL_MP3.mp3");
+    Mix_Music *gunshot = NULL;
+    gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
+    Mix_Music *ricePunch = NULL;
+    ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
     
 
     //this is the rectangle that will actually show the images
@@ -289,7 +295,7 @@ int main() {
         int mouse_y;
         int frame = 0;
         int keepPlayingTitleMusic = 1;
-        //Mix_PlayMusic(titleMusic, -1);
+        Mix_PlayMusic(titleMusic, -1);
         while(!quit && !play)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -395,6 +401,7 @@ int main() {
         // Mix_HaltMusic();
         int mouse_x;
         int mouse_y;
+        Mix_PlayMusic(gameMusic, -1);
         while(!quit)
         {
             Uint64 start = SDL_GetPerformanceCounter();
