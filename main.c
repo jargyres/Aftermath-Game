@@ -103,6 +103,7 @@ int main() {
     SDL_Texture* bulletTex = NULL;
     SDL_Texture* controlsTex = NULL;
     SDL_Texture* controlsTexBG = NULL;
+    SDL_Texture* blackPixelTex = NULL;
 
 
     //load the image into memory using SDL_Image library functions
@@ -119,6 +120,7 @@ int main() {
     SDL_Surface* exitOffSurface = IMG_Load("images/ExitOff.png");
     SDL_Surface* controlsSurface = IMG_Load("images/newControls.png");
     SDL_Surface* controlsBGSurface = IMG_Load("images/controlsBg.png");
+    SDL_Surface* blackPixelSurface = IMG_Load("images/blackPixel.png");
 
     // Make the textures using the renderer and the surfaces we made from the images
     bulletTex = SDL_CreateTextureFromSurface(rend, bulletSurface);
@@ -136,6 +138,7 @@ int main() {
     ExitOffTex = SDL_CreateTextureFromSurface(rend, exitOffSurface);
     controlsTex = SDL_CreateTextureFromSurface(rend, controlsSurface);
     controlsTexBG = SDL_CreateTextureFromSurface(rend, controlsBGSurface);
+    blackPixelTex = SDL_CreateTextureFromSurface(rend, blackPixelSurface);
 
     SDL_FreeSurface(bulletSurface);
     SDL_FreeSurface(cactusSurface);
@@ -149,6 +152,7 @@ int main() {
     SDL_FreeSurface(exitOffSurface);
     SDL_FreeSurface(controlsSurface);
     SDL_FreeSurface(controlsBGSurface);
+    SDL_FreeSurface(blackPixelSurface);
 
 
     //load our music
@@ -236,23 +240,21 @@ int main() {
     controlRect.x = (SCREENWIDTH/2) - (controlRect.w/2);
     controlRect.y = (SCREENHEIGHT/2) - (controlRect.h/2) + 30;
 
-
-
-
     controlsBGRect.x = 0;
     controlsBGRect.y = 0;
     controlsBGRect.w = 1;
     controlsBGRect.h = 1;
+
+    SDL_Rect blackPixelRect;
+    blackPixelRect.w = SCREENWIDTH;
+    blackPixelRect.w = SCREENHEIGHT;
+    SDL_QueryTexture(blackPixelTex, NULL, NULL, &blackPixelRect.w, &blackPixelRect.h);
 
     SDL_QueryTexture(controlsTex, NULL, NULL, &controlRect.w, &controlRect.h);
     SDL_QueryTexture(controlsTexBG, NULL, NULL, &controlsBGRect.w, &controlsBGRect.h);
 
     controlsBGRect.w *= SCREENWIDTH;
     controlsBGRect.h *= SCREENHEIGHT;
-
-
-
-
 
     // load the textures from the spriteSheets into their respective textureRects
     SDL_QueryTexture(titleBack1Tex, NULL, NULL, &titleBack1Rect.w, &titleBack1Rect.h);
@@ -462,7 +464,7 @@ int main() {
         int mouse_x;
         int mouse_y;
         Mix_PlayMusic(gameMusic, -1);
-        int texalpha = 255;
+        int texalpha = 510;
         while(!quit)
         {
             Uint64 start = SDL_GetPerformanceCounter();
@@ -585,6 +587,8 @@ int main() {
 
             // //basically set up the values of RGB we will use
             SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+
+            SDL_SetRenderDrawBlendMode(rend, SDL_BLENDMODE_BLEND);
             //clear the renderer so we dont just get garbage on our screen
             SDL_RenderClear(rend);
 
@@ -593,10 +597,11 @@ int main() {
             player_Animate(&p, currentlyShooting, currentlyWalking, lastRight, currentlyUp, lastDown, up, down, left, right,
                             angle, rend);
 
-            SDL_SetTextureAlphaMod(controlsTexBG, texalpha);
-            //SDL_RenderCopy(rend, controlsTexBG, NULL, &controlsBGRect);
+            SDL_SetTextureAlphaMod(blackPixelTex, texalpha/2);
+            SDL_SetTextureBlendMode(blackPixelTex, SDL_BLENDMODE_BLEND);
+            SDL_RenderCopy(rend, blackPixelTex, NULL, &controlsBGRect);
+            if(texalpha = 500) SDL_Delay(100);
             if(texalpha > 0) texalpha--; 
-            //printf("%d\n",texalpha);
 
             // finally push the renderer to the hardware, making the sprites appear on the screen
             SDL_RenderPresent(rend);
@@ -622,6 +627,7 @@ int main() {
     SDL_DestroyTexture(ExitOnTex);
     SDL_DestroyTexture(controlsTex);
     SDL_DestroyTexture(controlsTexBG);
+    SDL_DestroyTexture(blackPixelTex);
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
     Mix_FreeMusic(titleMusic);
