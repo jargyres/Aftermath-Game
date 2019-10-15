@@ -48,9 +48,9 @@ typedef struct {
     SDL_Texture* numberTex;
     SDL_Texture* ammoTex;
     SDL_Texture* ammoWordTex;
-    Mix_Chunk *gunshot;
-    // gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
-    Mix_Chunk *ricePunch;
+    Mix_Music *gunshot;
+    // // gunshot = Mix_LoadMUS("music/BANGPOWBAP.wav");
+    Mix_Music *ricePunch;
     // ricePunch = Mix_LoadMUS("music/RICE_PUNCH.wav");
     int channel;
     
