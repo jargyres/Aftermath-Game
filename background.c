@@ -104,6 +104,9 @@ void background_Constructor(background * me, char* backgroundImagePath,char* min
     SDL_QueryTexture(me->minimapTex, NULL, NULL, &me->minimapRect.w, &me->minimapRect.h);
     SDL_QueryTexture(me->minimapArrowTex, NULL, NULL, &me->minimapArrowRect.w, &me->minimapArrowRect.h);
     SDL_QueryTexture(me->inventoryTex, NULL, NULL, &me->inventoryRect.w, &me->inventoryRect.h);
+
+    me->minimapArrowRect.w *= 2;
+    me->minimapArrowRect.h *= 2;
    
 
 }
